@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Login - SWAPLY{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-teal-100 py-12 px-4">
+    <div class="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-white font-bold text-2xl">
+                S
+            </div>
+            <h2 class="text-3xl font-bold text-gray-800">Welcome to SWAPLY</h2>
+            <p class="text-gray-600 mt-2">Sign in with Google to continue</p>
+        </div>
+
+        <!-- Google Sign-in Button -->
+        <div id="g_id_onload"
+            data-client_id="{{ google_client_id }}"
+            data-context="signin"
+            data-ux_mode="popup"
+            data-callback="handleGoogleSignIn"
+            data-auto_prompt="false">
+        </div>
+
+        <div class="g_id_signin"
+            data-type="standard"
+            data-shape="rectangular"
+            data-theme="outline"
+            data-text="signin_with"
+            data-size="large"
+            data-logo_alignment="left">
+        </div>
+
+        <div id="message" class="mt-4 text-center hidden"></div>
+    </div>
+</div>
+
+<!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<script>
+function handleGoogleSignIn(response) {
+    console.log("🔐 Google Sign-In response received");
+    
+    // Send the credential to our backend
+    fetch('/api/google-login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            credential: response.credential
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("📨 Backend response:", data);
+        if (data.success) {
+            showMessage('✅ Login successful! Redirecting...', 'success');
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1000);
+        } else {
+            showMessage('❌ ' + (data.error || 'Login failed'), 'error');
+            // Reset Google Sign-In
+            google.accounts.id.disableAutoSelect();
+        }
+    })
+    .catch(error => {
+        console.error('❌ Network error:', error);
+        showMessage('❌ Network error. Please try again.', 'error');
+    });
+}
+
+function showMessage(text, type) {
+    const messageDiv = document.getElementById('message');
+    messageDiv.className = `mt-4 text-center p-3 rounded-lg ${
+        type === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
+    }`;
+    messageDiv.textContent = text;
+    messageDiv.classList.remove('hidden');
+}
+</script>
+
+<style>
+.g_id_signin {
+    margin: 0 auto;
+    display: table;
+}
+</style>
+{% endblock %}

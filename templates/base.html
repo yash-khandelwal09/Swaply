@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SWAPLY - School Book Store{% endblock %}</title>
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="/static/css/output.css">
+    <!-- Custom Utilities -->
+    <link rel="stylesheet" href="/static/css/utility.css">
+</head>
+
+<body class="from-gray-50 to-blue-50 min-h-screen flex flex-col">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50 border-b-4 border-emerald-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <a href="/"><img src="/static/assets/Untitled design.png" alt="" class="md:w-14 md:h-14  w-10 h-10 rounded-full"></a>
+                    <span
+                        class="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-700 bg-clip-text text-transparent">SWAPLY</span>
+                </div>
+
+               <!-- Desktop Navigation Links -->
+<div class="hidden md:flex items-center space-x-8">
+    <a href="{{ url_for('index') }}"
+        class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 border-b-2 border-transparent hover:border-emerald-500">Home</a>
+    <a href="{{ url_for('books') }}"
+        class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 border-b-2 border-transparent hover:border-emerald-500">Shop Books</a>
+    {% if session.user_id %}
+    <a href="{{ url_for('manage') }}"
+        class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 border-b-2 border-transparent hover:border-emerald-500">My Account</a>
+    <a href="/cart" class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 border-b-2 border-transparent hover:border-emerald-500 relative">
+        🛒 Cart
+        <span id="cartCount" class="absolute -top-2 -right-4 bg-emerald-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+    </a>
+    <button onclick="logout()"
+        class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300 font-medium">Logout</button>
+    {% else %}
+    <a href="{{ url_for('login') }}"
+        class="bg-emerald-500 text-white px-6 py-2 rounded-lg hover:bg-emerald-600 transition duration-300 font-medium">Login</a>
+    {% endif %}
+</div>
+
+<div class="md:hidden">
+    <button id="mobile-menu-button"
+        class="text-gray-700 hover:text-emerald-600 transition duration-300">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+    </button>
+</div>
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="md:hidden hidden pb-4 border-t border-gray-200 mt-2">
+    <div class="flex flex-col space-y-3">
+        <a href="{{ url_for('index') }}"
+            class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 px-4 rounded-lg hover:bg-emerald-50">Home</a>
+        <a href="{{ url_for('books') }}"
+            class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 px-4 rounded-lg hover:bg-emerald-50">Shop Books</a>
+        {% if session.user_id %}
+        <a href="{{ url_for('manage') }}"
+            class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 px-4 rounded-lg hover:bg-emerald-50">My Account</a>
+        <a href="/cart"
+            class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 px-4 rounded-lg hover:bg-emerald-50">🛒 Cart</a>
+        {% endif %}
+    </div>
+</div>
+                <!-- Mobile menu button -->
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-16 border-t-4 border-emerald-500">
+        <div class="max-w-7xl mx-auto px-4 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Brand -->
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div
+                            class="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center text-white font-bold">
+                            S
+                        </div>
+                        <span class="text-xl font-bold text-white">SWAPLY</span>
+                    </div>
+                    <p class="text-gray-300 mb-4 max-w-md">
+                        Your school's trusted platform for buying textbooks. Connect with fellow students
+                        and save money on course materials.
+                    </p>
+                    <div class="flex space-x-4">
+                        <div
+                            class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-emerald-500 transition duration-300 cursor-pointer">
+                            <span class="text-white font-semibold">f</span>
+                        </div>
+                        <div
+                            class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-emerald-500 transition duration-300 cursor-pointer">
+                            <span class="text-white font-semibold">t</span>
+                        </div>
+                        <div
+                            class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-emerald-500 transition duration-300 cursor-pointer">
+                            <span class="text-white font-semibold">in</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="{{ url_for('index') }}"
+                                class="text-gray-300 hover:text-emerald-400 transition duration-300">Home</a></li>
+                        <li><a href="{{ url_for('books') }}"
+                                class="text-gray-300 hover:text-emerald-400 transition duration-300">Shop Books</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">Need Help?</h3>
+                    <p class="text-gray-300 mb-2">📧 support@swaplly.school</p>
+                    <p class="text-gray-300">📞 (555) 123-4567</p>
+                    <p class="text-gray-300 mt-2">🏫 School Campus</p>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
+                <p>&copy; 2024 SWAPLY. All rights reserved. Made for school entrepreneurship project.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="/static/js/script.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

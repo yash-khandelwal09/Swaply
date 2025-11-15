@@ -1,0 +1,320 @@
+{% extends "base.html" %}
+
+{% block title %}Shopping Cart - SWAPLY{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">Shopping Cart</h1>
+    
+    <div id="cartContent">
+        <div class="text-center py-8">
+            <div class="spinner mx-auto"></div>
+            <p class="text-gray-500 mt-4">Loading your cart...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="fixed top-4 right-4 hidden p-4 rounded-lg shadow-lg text-white font-medium z-50 transform transition-all duration-300 translate-x-full"></div>
+
+<script>
+// Global cart functions
+function updateQuantity(bookId, newQuantity) {
+    console.log(`🔄 Updating quantity for ${bookId} to ${newQuantity}`);
+    
+    if (newQuantity <= 0) {
+        removeFromCart(bookId);
+        return;
+    }
+
+    fetch('/api/update-cart-item', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            book_id: bookId,
+            quantity: newQuantity
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            loadCart();
+            updateCartCount();
+            showToast('Cart updated!', 'success');
+        } else {
+            showToast(data.error || 'Failed to update cart', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error updating cart:', error);
+        showToast('Network error. Please try again.', 'error');
+    });
+}
+
+function removeFromCart(bookId) {
+    console.log(`🗑️ Removing book ${bookId} from cart`);
+    
+    if (!confirm('Are you sure you want to remove this item from your cart?')) return;
+
+    fetch('/api/remove-from-cart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            book_id: bookId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Item removed from cart', 'success');
+            loadCart();
+            updateCartCount();
+        } else {
+            showToast(data.error || 'Failed to remove item', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error removing from cart:', error);
+        showToast('Network error. Please try again.', 'error');
+    });
+}
+
+function clearCart() {
+    console.log('🔄 Clearing entire cart');
+    
+    if (!confirm('Are you sure you want to clear your entire cart?')) return;
+    
+    fetch('/api/clear-cart', {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Cart cleared successfully', 'success');
+            loadCart();
+            updateCartCount();
+        } else {
+            showToast(data.error || 'Failed to clear cart', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error clearing cart:', error);
+        showToast('Network error. Please try again.', 'error');
+    });
+}
+
+function proceedToCheckout() {
+    console.log('🚀 Proceeding to checkout');
+    
+    // Check if cart has items
+    fetch('/api/get-cart')
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                showToast(data.error, 'error');
+                return;
+            }
+            
+            if (!data.items || data.items.length === 0) {
+                showToast('Your cart is empty', 'error');
+                return;
+            }
+            
+            // Redirect to checkout page for cart
+            window.location.href = '/checkout?source=cart';
+        })
+        .catch(error => {
+            console.error('Error checking cart:', error);
+            showToast('Network error. Please try again.', 'error');
+        });
+}
+
+function loadCart() {
+    console.log('📦 Loading cart data...');
+    
+    fetch('/api/get-cart')
+        .then(response => response.json())
+        .then(data => {
+            console.log('🛒 Cart data received:', data);
+            const cartContent = document.getElementById('cartContent');
+            
+            if (data.error) {
+                cartContent.innerHTML = `
+                    <div class="text-center py-8">
+                        <p class="text-red-500">${data.error}</p>
+                        <a href="/login" class="text-emerald-600 hover:text-emerald-700 mt-2 inline-block">Please login</a>
+                    </div>
+                `;
+                return;
+            }
+
+            if (data.count === 0 || !data.items || data.items.length === 0) {
+                cartContent.innerHTML = `
+                    <div class="text-center py-12 bg-white rounded-xl shadow-lg">
+                        <div class="text-6xl mb-4">🛒</div>
+                        <p class="text-gray-500 text-xl mb-4">Your cart is empty</p>
+                        <p class="text-gray-500 mb-6">Add some books to get started!</p>
+                        <a href="/books" class="inline-block bg-emerald-500 text-white px-6 py-3 rounded-lg hover:bg-emerald-600 transition duration-300 font-semibold">
+                            Continue Shopping
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            // Display cart items
+            cartContent.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Cart Items -->
+                    <div class="lg:col-span-2 space-y-4">
+                        ${data.items.map(item => {
+                            const itemTotal = (item.price * item.quantity).toFixed(2);
+                            return `
+                            <div class="bg-white rounded-xl shadow-lg p-4 border border-gray-100 flex items-center space-x-4">
+                                <div class="w-16 h-20 bg-gradient-to-br from-emerald-100 to-blue-100 rounded-lg flex items-center justify-center text-emerald-600 font-bold text-xs flex-shrink-0">
+                                    BOOK
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold text-gray-800">${item.title}</h3>
+                                    <p class="text-gray-600 text-sm">by ${item.author}</p>
+                                    <p class="text-gray-500 text-xs">Condition: ${item.condition}</p>
+                                    <p class="text-emerald-600 font-bold mt-1">$${item.price.toFixed(2)} each</p>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button onclick="updateQuantity('${item.book_id}', ${item.quantity - 1})" 
+                                            class="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center hover:bg-gray-300 transition duration-200">-</button>
+                                    <span class="w-8 text-center font-semibold">${item.quantity}</span>
+                                    <button onclick="updateQuantity('${item.book_id}', ${item.quantity + 1})" 
+                                            class="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center hover:bg-gray-300 transition duration-200">+</button>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-bold text-emerald-600">$${itemTotal}</p>
+                                    <button onclick="removeFromCart('${item.book_id}')" 
+                                            class="text-red-500 hover:text-red-700 text-sm mt-1 transition duration-200">
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                            `;
+                        }).join('')}
+                    </div>
+
+                    <!-- Order Summary -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-white rounded-xl shadow-lg p-4 border border-gray-100 sticky top-4">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">Order Summary</h3>
+                            <div class="space-y-2 mb-4">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Items</span>
+                                    <span>${data.count}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Subtotal</span>
+                                    <span>$${data.total.toFixed(2)}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Shipping</span>
+                                    <span class="text-emerald-600">FREE</span>
+                                </div>
+                                <div class="border-t pt-2">
+                                    <div class="flex justify-between text-lg font-bold">
+                                        <span>Total</span>
+                                        <span class="text-emerald-600">$${data.total.toFixed(2)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="proceedToCheckout()" 
+                                    class="w-full bg-emerald-500 text-white py-3 rounded-lg hover:bg-emerald-600 transition duration-300 font-semibold">
+                                Proceed to Checkout
+                            </button>
+                            <button onclick="clearCart()" 
+                                    class="w-full bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600 transition duration-300 font-semibold mt-2">
+                                Clear Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        })
+        .catch(error => {
+            console.error('Error loading cart:', error);
+            document.getElementById('cartContent').innerHTML = `
+                <div class="text-center py-8">
+                    <p class="text-red-500">Error loading cart. Please try again.</p>
+                    <button onclick="loadCart()" class="bg-emerald-500 text-white px-4 py-2 rounded-lg mt-2 hover:bg-emerald-600">
+                        Retry
+                    </button>
+                </div>
+            `;
+        });
+}
+
+function updateCartCount() {
+    // Update cart count in navbar
+    fetch('/api/get-cart')
+        .then(response => response.json())
+        .then(data => {
+            const cartCountElements = document.querySelectorAll('.cart-count');
+            cartCountElements.forEach(element => {
+                if (data.count > 0) {
+                    element.textContent = data.count;
+                    element.classList.remove('hidden');
+                } else {
+                    element.classList.add('hidden');
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error updating cart count:', error);
+        });
+}
+
+function showToast(message, type = 'info') {
+    const toast = document.getElementById('toast');
+    const bgColor = type === 'success' ? 'bg-green-500' : 
+                    type === 'error' ? 'bg-red-500' : 
+                    'bg-blue-500';
+    
+    toast.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg text-white font-medium z-50 transform transition-all duration-300 ${bgColor}`;
+    toast.textContent = message;
+    toast.classList.remove('hidden', 'translate-x-full');
+    
+    setTimeout(() => {
+        toast.classList.add('translate-x-full');
+        setTimeout(() => toast.classList.add('hidden'), 300);
+    }, 3000);
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🛒 Cart page loaded');
+    loadCart();
+});
+
+// Make functions globally available
+window.updateQuantity = updateQuantity;
+window.removeFromCart = removeFromCart;
+window.clearCart = clearCart;
+window.proceedToCheckout = proceedToCheckout;
+</script>
+
+<style>
+.spinner {
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #10b981;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+{% endblock %}

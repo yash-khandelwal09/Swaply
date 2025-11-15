@@ -1,0 +1,708 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout - Swaple{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Checkout</h1>
+            <p class="text-gray-600 mt-2">Complete your purchase securely</p>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="mb-8">
+            <div class="flex items-center justify-center">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-emerald-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                        1
+                    </div>
+                    <div class="ml-2 text-sm font-medium text-emerald-600">Cart</div>
+                </div>
+                <div class="w-16 h-1 bg-emerald-600 mx-2"></div>
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-emerald-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                        2
+                    </div>
+                    <div class="ml-2 text-sm font-medium text-emerald-600">Details</div>
+                </div>
+                <div class="w-16 h-1 bg-gray-300 mx-2"></div>
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-gray-300 text-gray-500 rounded-full flex items-center justify-center text-sm font-semibold">
+                        3
+                    </div>
+                    <div class="ml-2 text-sm font-medium text-gray-500">Complete</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Order Summary Card -->
+            <div class="space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Order Summary</h2>
+                    
+                    <div id="orderSummary" class="space-y-4">
+                        <div class="text-center py-8">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+                            <p class="text-gray-500">Loading order details...</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Order Total -->
+                    <div id="orderTotal" class="hidden border-t border-gray-200 pt-4 mt-6">
+                        <div class="space-y-3">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Subtotal</span>
+                                <span id="subtotal" class="font-medium">$0.00</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Shipping</span>
+                                <span class="font-medium text-emerald-600">Free</span>
+                            </div>
+                            <div class="flex justify-between text-base font-semibold text-gray-900 border-t border-gray-200 pt-3">
+                                <span>Total</span>
+                                <span id="total" class="text-lg">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Badges -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center justify-center space-x-8 text-gray-400">
+                        <div class="text-center">
+                            <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <span class="text-lg">🔒</span>
+                            </div>
+                            <p class="text-xs">Secure Payment</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <span class="text-lg">🚚</span>
+                            </div>
+                            <p class="text-xs">Free Delivery</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <span class="text-lg">↩️</span>
+                            </div>
+                            <p class="text-xs">Easy Returns</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Checkout Form Card -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-6">Shipping & Payment</h2>
+                
+                <form id="checkoutForm" class="space-y-6">
+                    <!-- Contact Information -->
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Contact Information</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="full_name" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Full Name *
+                                </label>
+                                <input type="text" id="full_name" name="full_name" required
+                                       class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200"
+                                       placeholder="Enter your full name">
+                            </div>
+                            <div>
+                                <label for="phone_number" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Phone Number *
+                                </label>
+                                <input type="tel" id="phone_number" name="phone_number" required
+                                       class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200"
+                                       placeholder="+1 (555) 000-0000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Address -->
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Shipping Address</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="address_line1" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Street Address *
+                                </label>
+                                <input type="text" id="address_line1" name="address_line1" required
+                                       class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200"
+                                       placeholder="123 Main St">
+                            </div>
+                            <div>
+                                <label for="address_line2" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Apartment, Suite, etc. (Optional)
+                                </label>
+                                <input type="text" id="address_line2" name="address_line2"
+                                       class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200"
+                                       placeholder="Apt 4B">
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label for="address_city" class="block text-sm font-medium text-gray-700 mb-1">
+                                        City *
+                                    </label>
+                                    <input type="text" id="address_city" name="address_city" required
+                                           class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200"
+                                           placeholder="New York">
+                                </div>
+                                <div>
+                                    <label for="address_state" class="block text-sm font-medium text-gray-700 mb-1">
+                                        State *
+                                    </label>
+                                    <input type="text" id="address_state" name="address_state" required
+                                           class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200"
+                                           placeholder="NY">
+                                </div>
+                                <div>
+                                    <label for="address_zip" class="block text-sm font-medium text-gray-700 mb-1">
+                                        ZIP Code *
+                                    </label>
+                                    <input type="text" id="address_zip" name="address_zip" required
+                                           class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200"
+                                           placeholder="10001">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Payment Method</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-emerald-500 transition duration-200 cursor-pointer">
+                                <input type="radio" id="cash_on_delivery" name="payment_method" value="cash_on_delivery" 
+                                       class="h-5 w-5 text-emerald-600 focus:ring-emerald-500 border-gray-300" checked>
+                                <label for="cash_on_delivery" class="ml-3 flex items-center">
+                                    <span class="block text-sm font-medium text-gray-700">Cash on Delivery</span>
+                                    <span class="ml-2 text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">Recommended</span>
+                                </label>
+                            </div>
+                            
+                            <div class="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-emerald-500 transition duration-200 cursor-pointer">
+                                <input type="radio" id="online" name="payment_method" value="online" 
+                                       class="h-5 w-5 text-emerald-600 focus:ring-emerald-500 border-gray-300">
+                                <label for="online" class="ml-3 block text-sm font-medium text-gray-700">
+                                    Online Payment
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Online Payment Info -->
+                        <div id="onlinePaymentInfo" class="hidden mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                    <span class="text-blue-600 text-sm">💳</span>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-blue-900">Secure Online Payment</p>
+                                    <p class="text-xs text-blue-600">We accept all major credit cards and digital wallets</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="pt-4">
+                        <button type="submit" 
+                                class="w-full bg-emerald-600 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-500 focus:ring-opacity-50 transition duration-200 transform hover:scale-[1.02] flex items-center justify-center">
+                            <span id="submitText">Place Order</span>
+                            <div id="submitSpinner" class="hidden ml-2">
+                                <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                            </div>
+                        </button>
+                        <p class="text-xs text-gray-500 text-center mt-3">
+                            By placing your order, you agree to our <a href="#" class="text-emerald-600 hover:text-emerald-700">Terms of Service</a> and <a href="#" class="text-emerald-600 hover:text-emerald-700">Privacy Policy</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-2xl p-8 max-w-md mx-4 transform transition-all duration-300 scale-95">
+        <div class="text-center">
+            <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="text-2xl">🎉</span>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Order Placed!</h3>
+            <p class="text-gray-600 mb-6">Thank you for your purchase. We'll contact you soon for delivery.</p>
+            <button onclick="redirectToManage()" 
+                    class="w-full bg-emerald-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-emerald-700 transition duration-200">
+                View My Orders
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="fixed top-4 right-4 hidden p-4 rounded-lg shadow-lg text-white font-medium z-50 transform transition-all duration-300 translate-x-full"></div>
+
+<script>
+// Global variables
+let currentBookId = null;
+let currentSource = null;
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("🚀 Checkout page initialized");
+    
+    // Get URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    currentBookId = urlParams.get('book_id');
+    currentSource = urlParams.get('source');
+    
+    console.log("📖 Book ID:", currentBookId);
+    console.log("🛒 Source:", currentSource);
+    
+    // Load user address first
+    loadUserAddress();
+    
+    // Setup event listeners
+    setupEventListeners();
+    
+    // Load order details based on source
+    loadOrderDetails();
+});
+
+function setupEventListeners() {
+    // Payment method toggle
+    const paymentRadios = document.querySelectorAll('input[name="payment_method"]');
+    const onlinePaymentInfo = document.getElementById('onlinePaymentInfo');
+    
+    paymentRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            onlinePaymentInfo.classList.toggle('hidden', this.value !== 'online');
+        });
+    });
+
+    // Form submission
+    const checkoutForm = document.getElementById('checkoutForm');
+    checkoutForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        handleFormSubmit(e);
+    });
+
+    // Real-time validation
+    document.querySelectorAll('input[required]').forEach(input => {
+        input.addEventListener('blur', function() {
+            validateField(this);
+        });
+    });
+}
+
+function loadOrderDetails() {
+    console.log("📦 Loading order details...");
+    
+    if (currentSource === 'cart') {
+        loadCartCheckout();
+    } else if (currentBookId) {
+        loadSingleBookCheckout();
+    } else {
+        showBookNotFound('No items selected. Please go back and select items.');
+    }
+}
+
+function loadSingleBookCheckout() {
+    console.log("📖 Loading single book checkout for ID:", currentBookId);
+    
+    fetch(`/api/get-book/${currentBookId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Book not found');
+            }
+            return response.json();
+        })
+        .then(book => {
+            console.log("✅ Book loaded:", book);
+            
+            if (book.error) {
+                showBookNotFound(book.error);
+                return;
+            }
+            
+            displaySingleBook(book);
+        })
+        .catch(error => {
+            console.error('Error loading book:', error);
+            showBookNotFound('Book not found or server error');
+        });
+}
+
+function loadCartCheckout() {
+    console.log("🛒 Loading cart checkout...");
+    
+    fetch('/api/get-cart')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to load cart');
+            }
+            return response.json();
+        })
+        .then(cart => {
+            console.log("✅ Cart loaded:", cart);
+            
+            if (cart.error) {
+                showBookNotFound(cart.error);
+                return;
+            }
+            
+            if (cart.items && cart.items.length > 0) {
+                displayCartCheckout(cart.items, cart.total);
+            } else {
+                showBookNotFound('Cart is empty');
+            }
+        })
+        .catch(error => {
+            console.error('Error loading cart:', error);
+            showBookNotFound('Error loading cart: ' + error.message);
+        });
+}
+
+function displaySingleBook(book) {
+    const orderSummary = document.getElementById('orderSummary');
+    const orderTotal = document.getElementById('orderTotal');
+    
+    // Format price properly
+    let price = 0;
+    if (book.price) {
+        price = typeof book.price === 'string' ? 
+            parseFloat(book.price.replace('$', '')) : 
+            parseFloat(book.price);
+    }
+    
+    // Handle NaN price
+    if (isNaN(price)) {
+        price = 0;
+    }
+
+    orderSummary.innerHTML = `
+        <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+            <div class="w-16 h-20 bg-gradient-to-br from-emerald-100 to-blue-100 rounded-lg flex items-center justify-center text-emerald-600 font-bold text-xs flex-shrink-0">
+                BOOK
+            </div>
+            <div class="flex-1 min-w-0">
+                <h4 class="font-semibold text-gray-800 truncate">${book.title || 'Unknown Title'}</h4>
+                <p class="text-gray-600 text-sm truncate">by ${book.author || 'Unknown Author'}</p>
+                <div class="flex items-center justify-between mt-2">
+                    <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">${book.condition || 'Unknown'}</span>
+                    <span class="text-lg font-bold text-emerald-600">$${price.toFixed(2)}</span>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Show order total
+    orderTotal.classList.remove('hidden');
+    document.getElementById('subtotal').textContent = `$${price.toFixed(2)}`;
+    document.getElementById('total').textContent = `$${price.toFixed(2)}`;
+    
+    // Update form submission for single book
+    const checkoutForm = document.getElementById('checkoutForm');
+    checkoutForm.onsubmit = function(e) {
+        e.preventDefault();
+        placeSingleOrder();
+    };
+}
+
+function displayCartCheckout(cartItems, total) {
+    const orderSummary = document.getElementById('orderSummary');
+    const orderTotal = document.getElementById('orderTotal');
+    
+    let itemsHtml = '';
+    cartItems.forEach((item, index) => {
+        const itemTotal = item.price * item.quantity;
+        itemsHtml += `
+            <div class="flex items-start space-x-3 mb-4 p-3 bg-gray-50 rounded-lg">
+                <div class="w-12 h-16 bg-gradient-to-br from-emerald-100 to-blue-100 rounded-lg flex items-center justify-center text-emerald-600 font-bold text-xs flex-shrink-0">
+                    BOOK
+                </div>
+                <div class="flex-1">
+                    <h4 class="font-bold text-gray-800 leading-tight">${item.title}</h4>
+                    <p class="text-gray-600 text-sm">by ${item.author}</p>
+                    <p class="text-gray-500 text-xs mt-1">Condition: ${item.condition}</p>
+                    <p class="text-emerald-600 font-bold mt-1">$${item.price.toFixed(2)} × ${item.quantity} = $${itemTotal.toFixed(2)}</p>
+                </div>
+            </div>
+        `;
+    });
+    
+    orderSummary.innerHTML = `
+        <div class="text-left space-y-3">
+            <h3 class="font-semibold text-gray-800 border-b pb-2">Order Summary (${cartItems.length} items)</h3>
+            ${itemsHtml}
+        </div>
+    `;
+
+    orderTotal.classList.remove('hidden');
+    document.getElementById('subtotal').textContent = `$${total.toFixed(2)}`;
+    document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+    
+    // Update form submission for cart
+    const checkoutForm = document.getElementById('checkoutForm');
+    checkoutForm.onsubmit = function(e) {
+        e.preventDefault();
+        placeOrderFromCart();
+    };
+}
+
+function showBookNotFound(message) {
+    const orderSummary = document.getElementById('orderSummary');
+    orderSummary.innerHTML = `
+        <div class="text-center py-8">
+            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="text-2xl">📚</span>
+            </div>
+            <p class="text-gray-500 mb-4">${message}</p>
+            <a href="/books" class="inline-flex items-center bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition duration-200">
+                Browse Books
+                <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                </svg>
+            </a>
+        </div>
+    `;
+}
+
+function loadUserAddress() {
+    console.log("🏠 Loading user address...");
+    
+    fetch('/api/get-user-address')
+        .then(response => response.json())
+        .then(userInfo => {
+            if (userInfo && userInfo.name) {
+                autoFillForm(userInfo);
+                console.log("✅ User address loaded");
+            } else {
+                console.log("ℹ️ No saved address found");
+            }
+        })
+        .catch(error => {
+            console.log("❌ Error loading user address:", error);
+        });
+}
+
+function autoFillForm(userInfo) {
+    const fields = {
+        'full_name': userInfo.name,
+        'phone_number': userInfo.phone,
+        'address_line1': userInfo.address_line1,
+        'address_line2': userInfo.address_line2,
+        'address_city': userInfo.city,
+        'address_state': userInfo.state,
+        'address_zip': userInfo.zip_code
+    };
+
+    Object.entries(fields).forEach(([id, value]) => {
+        const element = document.getElementById(id);
+        if (element && value) {
+            element.value = value;
+        }
+    });
+}
+
+function validateField(input) {
+    if (!input.value.trim()) {
+        input.classList.add('border-red-500');
+        input.classList.remove('border-gray-300');
+    } else {
+        input.classList.remove('border-red-500');
+        input.classList.add('border-gray-300');
+    }
+}
+
+function validateForm() {
+    let isValid = true;
+    const requiredFields = [
+        'full_name', 'phone_number', 'address_line1', 
+        'address_city', 'address_state', 'address_zip'
+    ];
+    
+    requiredFields.forEach(field => {
+        const input = document.getElementById(field);
+        if (!input.value.trim()) {
+            input.classList.add('border-red-500');
+            isValid = false;
+        } else {
+            input.classList.remove('border-red-500');
+        }
+    });
+    
+    if (!document.querySelector('input[name="payment_method"]:checked')) {
+        showToast('Please select a payment method', 'error');
+        isValid = false;
+    }
+    
+    return isValid;
+}
+
+function handleFormSubmit(e) {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+        return;
+    }
+    
+    if (currentSource === 'cart') {
+        placeOrderFromCart();
+    } else {
+        placeSingleOrder();
+    }
+}
+
+function placeSingleOrder() {
+    console.log("📦 Placing single order for book:", currentBookId);
+    
+    const formData = new FormData(document.getElementById('checkoutForm'));
+    const orderData = {
+        book_id: currentBookId,
+        full_name: formData.get('full_name'),
+        phone_number: formData.get('phone_number'),
+        address_line1: formData.get('address_line1'),
+        address_line2: formData.get('address_line2'),
+        address_city: formData.get('address_city'),
+        address_state: formData.get('address_state'),
+        address_zip: formData.get('address_zip'),
+        payment_method: formData.get('payment_method')
+    };
+
+    console.log("📦 Order data:", orderData);
+
+    // Show loading state
+    setLoadingState(true);
+
+    fetch('/api/place-order', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("📦 Order response:", data);
+        if (data.success) {
+            showSuccessModal();
+        } else {
+            showToast('❌ ' + (data.error || 'Order failed'), 'error');
+            setLoadingState(false);
+        }
+    })
+    .catch(error => {
+        console.error('Order error:', error);
+        showToast('❌ Network error. Please try again.', 'error');
+        setLoadingState(false);
+    });
+}
+
+function placeOrderFromCart() {
+    console.log("📦 Placing order from cart");
+    
+    const formData = new FormData(document.getElementById('checkoutForm'));
+    const orderData = {
+        full_name: formData.get('full_name'),
+        phone_number: formData.get('phone_number'),
+        address_line1: formData.get('address_line1'),
+        address_line2: formData.get('address_line2'),
+        address_city: formData.get('address_city'),
+        address_state: formData.get('address_state'),
+        address_zip: formData.get('address_zip'),
+        payment_method: formData.get('payment_method')
+    };
+
+    console.log("📦 Cart order data:", orderData);
+
+    // Show loading state
+    setLoadingState(true);
+
+    fetch('/api/place-order-from-cart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("📦 Cart order response:", data);
+        if (data.success) {
+            showSuccessModal();
+        } else {
+            showToast('❌ ' + (data.error || 'Order failed'), 'error');
+            setLoadingState(false);
+        }
+    })
+    .catch(error => {
+        console.error('Cart order error:', error);
+        showToast('❌ Network error. Please try again.', 'error');
+        setLoadingState(false);
+    });
+}
+
+function setLoadingState(loading) {
+    const submitText = document.getElementById('submitText');
+    const submitSpinner = document.getElementById('submitSpinner');
+    const submitBtn = document.querySelector('button[type="submit"]');
+
+    if (loading) {
+        submitText.textContent = 'Processing...';
+        submitSpinner.classList.remove('hidden');
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-75');
+    } else {
+        submitText.textContent = 'Place Order';
+        submitSpinner.classList.add('hidden');
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-75');
+    }
+}
+
+function showSuccessModal() {
+    const modal = document.getElementById('successModal');
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        modal.querySelector('div').classList.remove('scale-95');
+        modal.querySelector('div').classList.add('scale-100');
+    }, 10);
+}
+
+function showToast(message, type = 'info') {
+    const toast = document.getElementById('toast');
+    const bgColor = type === 'success' ? 'bg-green-500' : 
+                    type === 'error' ? 'bg-red-500' : 
+                    'bg-blue-500';
+    
+    toast.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg text-white font-medium z-50 transform transition-all duration-300 ${bgColor}`;
+    toast.textContent = message;
+    toast.classList.remove('hidden', 'translate-x-full');
+    
+    setTimeout(() => {
+        toast.classList.add('translate-x-full');
+        setTimeout(() => toast.classList.add('hidden'), 300);
+    }, 4000);
+}
+
+// Global functions
+function redirectToManage() {
+    window.location.href = '/manage';
+}
+</script>
+{% endblock %}

@@ -1,0 +1,413 @@
+{% extends "base.html" %}
+
+{% block title %}My Account - SWAPLY{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8">
+    <!-- Authentication Check -->
+    <div id="authCheck" class="hidden">
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mb-6">
+            <div class="flex items-center">
+                <div class="py-1">⚠️</div>
+                <div class="ml-3">
+                    <p class="font-semibold">Authentication Required</p>
+                    <p class="text-sm">Please <a href="/login" class="underline font-semibold">login with your Google
+                            account</a> to access your account.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Info -->
+    <div id="userInfo" class="hidden">
+        <h1 class="text-4xl font-bold text-gray-800 mb-2">My Account</h1>
+        <p class="text-gray-600 mb-8">Manage your orders and profile information</p>
+
+        <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white font-semibold"
+                    id="userInitial">
+                    U
+                </div>
+                <div>
+                    <p class="font-semibold text-emerald-800" id="userName">Loading...</p>
+                    <p class="text-sm text-emerald-600" id="userEmail">Loading...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Tabs -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-8">
+            <!-- Tab Headers -->
+            <div class="border-b border-gray-200">
+                <nav class="flex -mb-px">
+                    <button id="ordersTab"
+                        class="tab-button active py-4 px-6 text-center border-b-2 border-emerald-500 text-emerald-600 font-semibold flex-1">
+                        📦 My Orders
+                    </button>
+                    <button id="addressesTab"
+                        class="tab-button py-4 px-6 text-center border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-semibold flex-1">
+                        📍 Saved Addresses
+                    </button>
+                    <button id="profileTab"
+                        class="tab-button py-4 px-6 text-center border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-semibold flex-1">
+                        👤 Profile
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="p-6">
+                <!-- Orders Tab Content -->
+                <div id="ordersContent" class="tab-content active">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Order History</h3>
+                    <div id="ordersList" class="space-y-4">
+                        <div class="text-center py-8">
+                            <div class="spinner"></div>
+                            <p class="text-gray-500 mt-4">Loading your orders...</p>
+                        </div>
+                    </div>
+
+                    <!-- No Orders Message -->
+                    <div id="noOrdersMessage" class="hidden text-center py-12">
+                        <div class="text-6xl mb-4">📦</div>
+                        <p class="text-gray-500 text-xl mb-4">You haven't placed any orders yet.</p>
+                        <p class="text-gray-500 mb-6">Start shopping to see your order history here!</p>
+                        <a href="/books"
+                            class="inline-block bg-emerald-500 text-white px-8 py-4 rounded-xl hover:bg-emerald-600 transition duration-300 font-semibold text-lg">
+                            🛒 Shop Books
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Addresses Tab Content -->
+                <div id="addressesContent" class="tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Saved Addresses</h3>
+                    <div id="addressesList" class="space-y-4">
+                        <div class="text-center py-8">
+                            <div class="spinner"></div>
+                            <p class="text-gray-500 mt-4">Loading your addresses...</p>
+                        </div>
+                    </div>
+
+                    <!-- No Addresses Message -->
+                    <div id="noAddressesMessage" class="hidden text-center py-12">
+                        <div class="text-6xl mb-4">📍</div>
+                        <p class="text-gray-500 text-xl mb-4">No saved addresses yet.</p>
+                        <p class="text-gray-500 mb-6">Your addresses will appear here after your first order.</p>
+                    </div>
+                </div>
+
+                <!-- Profile Tab Content -->
+                <div id="profileContent" class="tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Profile Information</h3>
+                    <div class="bg-gray-50 rounded-xl p-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                                <p class="text-gray-900 font-semibold" id="profileName">Loading...</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                                <p class="text-gray-900 font-semibold" id="profileEmail">Loading...</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Account Created</label>
+                                <p class="text-gray-600" id="profileCreated">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab functionality
+    function initializeTabs() {
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const targetTab = this.id.replace('Tab', 'Content');
+
+                // Remove active class from all tabs
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('active', 'border-emerald-500', 'text-emerald-600');
+                    btn.classList.add('border-transparent', 'text-gray-500');
+                });
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                    content.classList.add('hidden');
+                });
+
+                // Add active class to current tab
+                this.classList.add('active', 'border-emerald-500', 'text-emerald-600');
+                this.classList.remove('border-transparent', 'text-gray-500');
+                document.getElementById(targetTab).classList.add('active');
+                document.getElementById(targetTab).classList.remove('hidden');
+
+                // Load tab content if needed
+                if (targetTab === 'ordersContent') {
+                    loadOrders();
+                } else if (targetTab === 'addressesContent') {
+                    loadAddresses();
+                } else if (targetTab === 'profileContent') {
+                    loadProfile();
+                }
+            });
+        });
+    }
+
+    // Check authentication and load user info
+    function checkAuth() {
+        console.log("🔐 Checking authentication status...");
+
+        fetch('/api/user')
+            .then(response => response.json())
+            .then(data => {
+                console.log("👤 Auth response:", data);
+
+                if (data.logged_in) {
+                    // User is logged in
+                    document.getElementById('authCheck').classList.add('hidden');
+                    document.getElementById('userInfo').classList.remove('hidden');
+
+                    // Display user info
+                    document.getElementById('userName').textContent = data.user.name;
+                    document.getElementById('userEmail').textContent = data.user.email;
+                    document.getElementById('userInitial').textContent = data.user.name.charAt(0).toUpperCase();
+
+                    // Load initial tab content
+                    loadOrders();
+                } else {
+                    // User is not logged in
+                    document.getElementById('authCheck').classList.remove('hidden');
+                    document.getElementById('userInfo').classList.add('hidden');
+                }
+            })
+            .catch(error => {
+                console.error('❌ Auth check error:', error);
+                document.getElementById('authCheck').classList.remove('hidden');
+            });
+    }
+
+    // Load real orders from database
+    function loadOrders() {
+        console.log("📦 Loading user's orders from database...");
+
+        fetch('/api/get-orders')
+            .then(response => response.json())
+            .then(orders => {
+                const ordersList = document.getElementById('ordersList');
+                const noOrdersMessage = document.getElementById('noOrdersMessage');
+
+                if (orders.error) {
+                    ordersList.innerHTML = `<p class="text-red-500 text-center">Error: ${orders.error}</p>`;
+                    return;
+                }
+
+                if (orders.length === 0) {
+                    ordersList.classList.add('hidden');
+                    noOrdersMessage.classList.remove('hidden');
+                    return;
+                }
+
+                noOrdersMessage.classList.add('hidden');
+                ordersList.classList.remove('hidden');
+
+                // Display real orders
+                ordersList.innerHTML = orders.map(order => `
+                <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition duration-300">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="flex-1">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-xl font-bold text-gray-800">${order.book_title}</h4>
+                                    <p class="text-gray-600 text-sm">Order #${order.order_id}</p>
+                                </div>
+                                <span class="px-3 py-1 rounded-full text-sm font-semibold ${order.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                        order.status === 'Shipped' ? 'bg-blue-100 text-blue-800' :
+                            order.status === 'Delivered' ? 'bg-green-100 text-green-800' :
+                                order.status === 'Cancelled' ? 'bg-red-100 text-red-800' :
+                                    'bg-gray-100 text-gray-800'
+                    }">
+                                    ${order.status}
+                                </span>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <p class="text-gray-600"><strong>Order Date:</strong> ${formatDate(order.created_at)}</p>
+                                    <p class="text-gray-600"><strong>Quantity:</strong> ${order.quantity}</p>
+                                    <p class="text-gray-600"><strong>Payment:</strong> ${order.payment_method === 'cod' ? 'Cash on Delivery' : 'Online Payment'}</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600"><strong>Total:</strong> $${order.total_price}</p>
+                                    <p class="text-gray-600"><strong>Delivery To:</strong> ${order.full_name}</p>
+                                    <p class="text-gray-600"><strong>Phone:</strong> ${order.phone}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 pt-4 border-t border-gray-200">
+                                <p class="text-gray-700 text-sm">
+                                    <strong>Delivery Address:</strong><br>
+                                    ${order.address_line1}${order.address_line2 ? ', ' + order.address_line2 : ''}<br>
+                                    ${order.city}, ${order.state} ${order.zip_code}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+                console.log(`✅ Loaded ${orders.length} real orders from database`);
+            })
+            .catch(error => {
+                console.error('❌ Error loading orders:', error);
+                document.getElementById('ordersList').innerHTML = `
+                <div class="text-center py-8 text-red-500">
+                    <p>Error loading your orders. Please try refreshing the page.</p>
+                </div>
+            `;
+            });
+    }
+
+    // Load addresses from database
+    function loadAddresses() {
+        console.log("📍 Loading user's addresses from database...");
+
+        fetch('/api/get-user-address')
+            .then(response => response.json())
+            .then(address => {
+                const addressesList = document.getElementById('addressesList');
+                const noAddressesMessage = document.getElementById('noAddressesMessage');
+
+                if (address.error) {
+                    addressesList.innerHTML = `<p class="text-red-500 text-center">Error: ${address.error}</p>`;
+                    return;
+                }
+
+                if (!address || Object.keys(address).length === 0) {
+                    addressesList.classList.add('hidden');
+                    noAddressesMessage.classList.remove('hidden');
+                    return;
+                }
+
+                noAddressesMessage.classList.add('hidden');
+                addressesList.classList.remove('hidden');
+
+                // Display saved address
+                addressesList.innerHTML = `
+                <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <h4 class="text-lg font-semibold text-gray-800">Primary Address</h4>
+                        <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full">Default</span>
+                    </div>
+                    
+                    <div class="space-y-2 text-gray-700">
+                        <p><strong>Name:</strong> ${address.name}</p>
+                        <p><strong>Phone:</strong> ${address.phone}</p>
+                        <p><strong>Address:</strong> ${address.address_line1}</p>
+                        ${address.address_line2 ? `<p><strong>Address Line 2:</strong> ${address.address_line2}</p>` : ''}
+                        <p><strong>City:</strong> ${address.city}</p>
+                        <p><strong>State:</strong> ${address.state}</p>
+                        <p><strong>ZIP Code:</strong> ${address.zip_code}</p>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-t border-gray-200 text-xs text-gray-500">
+                        <p>Last updated: ${formatDate(address.updated_at)}</p>
+                    </div>
+                </div>
+            `;
+
+                console.log("✅ Loaded real address from database");
+            })
+            .catch(error => {
+                console.error('❌ Error loading addresses:', error);
+                document.getElementById('addressesList').innerHTML = `
+                <div class="text-center py-8 text-red-500">
+                    <p>Error loading your addresses. Please try refreshing the page.</p>
+                </div>
+            `;
+            });
+    }
+
+    // Load profile information
+    function loadProfile() {
+        console.log("👤 Loading profile information...");
+
+        const profileName = document.getElementById('profileName');
+        const profileEmail = document.getElementById('profileEmail');
+        const profileCreated = document.getElementById('profileCreated');
+
+        if (profileName && profileEmail) {
+            profileName.textContent = document.getElementById('userName').textContent;
+            profileEmail.textContent = document.getElementById('userEmail').textContent;
+            profileCreated.textContent = 'Today'; // TODO: Get actual creation date
+        }
+    }
+
+    // Utility function to format dates
+    function formatDate(dateString) {
+        if (!dateString) return 'Recently';
+
+        try {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        } catch (e) {
+            return dateString;
+        }
+    }
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log("🚀 My Account page loaded");
+        checkAuth();
+        initializeTabs();
+    });
+</script>
+
+<style>
+    .spinner {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #10b981;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+    }
+
+    .tab-button.active {
+        border-bottom-color: #10b981;
+        color: #059669;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+{% endblock %}

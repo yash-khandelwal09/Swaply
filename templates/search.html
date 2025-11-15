@@ -1,0 +1,327 @@
+{% extends "base.html" %}
+
+{% block title %}Shop Books - SWAPLY{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <h1 class="text-4xl font-bold text-gray-800 mb-8">Shop Books</h1>
+
+    <!-- Search and Filter Section -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <input type="text" id="searchInput" placeholder="Search by title or author..."
+                class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <select id="conditionFilter"
+                class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">All Conditions</option>
+                <option value="New">New</option>
+                <option value="Like New">Like New</option>
+                <option value="Good">Good</option>
+                <option value="Fair">Fair</option>
+            </select>
+            <select id="priceFilter"
+                class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Any Price</option>
+                <option value="0-20">$0 - $20</option>
+                <option value="20-50">$20 - $50</option>
+                <option value="50-100">$50 - $100</option>
+                <option value="100+">$100+</option>
+            </select>
+            <button id="resetFilters"
+                class="bg-gray-500 text-white rounded-lg px-4 py-2 hover:bg-gray-600 transition duration-300">Reset
+                Filters</button>
+        </div>
+    </div>
+
+    <!-- Books Count -->
+    <div class="flex justify-between items-center mb-6">
+        <p class="text-gray-600">
+            Showing <span id="booksCount" class="font-semibold">{{ books|length }}</span> books available
+        </p>
+        <div class="flex items-center space-x-2 text-sm text-gray-500">
+            <span>💡</span>
+            <span>Login to add books to cart or purchase</span>
+        </div>
+    </div>
+
+    <!-- Books Grid -->
+    <div id="booksGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for book in books %}
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300 transform hover:-translate-y-1 book-card border border-gray-100"
+            data-condition="{{ book.condition }}" data-price="{{ book.price }}"
+            data-title="{{ book.title }}" data-author="{{ book.author }}"
+            data-book-id="{{ book.id }}">
+            <div class="p-6">
+                <!-- Book Header -->
+                <div class="flex justify-between items-start mb-4">
+                    <span class="bg-emerald-100 text-emerald-800 text-sm px-3 py-1 rounded-full font-semibold">
+                        {{ book.condition or 'Good' }}
+                    </span>
+                    <span class="text-2xl font-bold text-emerald-600">${{ book.price }}</span>
+                </div>
+
+                <!-- Book Info -->
+                <h3 class="text-xl font-bold text-gray-800 mb-2">{{ book.title }}</h3>
+                <p class="text-gray-600 mb-3">by {{ book.author }}</p>
+
+                {% if book.isbn %}
+                <p class="text-gray-500 text-sm mb-3">
+                    <span class="font-semibold">ISBN:</span> {{ book.isbn }}
+                </p>
+                {% endif %}
+
+                {% if book.description %}
+                <p class="text-gray-700 mb-4 text-sm leading-relaxed line-clamp-3">
+                    {{ book.description }}
+                </p>
+                {% endif %}
+
+                <!-- Action Buttons -->
+                <div class="space-y-3">
+                    {% if session.user_id %}
+                    <button onclick="addToCart('{{ book.id }}')"
+                        class="w-full bg-emerald-500 text-white text-center py-3 rounded-xl hover:bg-emerald-600 transition duration-300 font-semibold add-to-cart-btn">
+                        🛒 Add to Cart
+                    </button>
+                    <a href="/checkout?book_id={{ book.id }}"
+                        class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-xl hover:from-blue-600 hover:to-purple-700 transition duration-300 font-semibold shadow-md hover:shadow-lg buy-now-btn block text-center">
+                        ⚡ Buy Now
+                    </a>
+                    {% else %}
+                    <a href="/login"
+                        class="w-full bg-emerald-500 text-white py-3 rounded-xl hover:bg-emerald-600 transition duration-300 font-semibold shadow-md hover:shadow-lg block text-center">
+                        🔐 Login to Order
+                    </a>
+                    {% endif %}
+
+                    <!-- Additional Info -->
+                    <div class="text-center pt-2">
+                        <p class="text-xs text-gray-500">
+                            Listed on: {{ book.timestamp or 'Recently' }}
+                        </p>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Status: <span class="text-emerald-600 font-semibold">{{ book.status or 'Available' }}</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-span-full text-center py-16 bg-white rounded-2xl shadow-lg">
+            <div class="text-6xl mb-4">📚</div>
+            <p class="text-gray-500 text-xl mb-4">No books available at the moment.</p>
+            <p class="text-gray-500 mb-6">Check back soon for new book listings!</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="fixed top-4 right-4 hidden p-4 rounded-lg shadow-lg text-white font-medium z-50 transform transition-all duration-300 translate-x-full"></div>
+
+<script>
+// Debug logging
+console.log("🔧 search.html JavaScript loaded");
+
+// Add to Cart functionality
+function addToCart(bookId) {
+    console.log("🛒 Add to Cart clicked for book:", bookId);
+    
+    fetch('/api/add-to-cart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            book_id: bookId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Book added to cart!', 'success');
+            updateCartCount();
+        } else {
+            showToast(data.error || 'Failed to add to cart', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error adding to cart:', error);
+        showToast('Network error. Please try again.', 'error');
+    });
+}
+
+function updateCartCount() {
+    // Update cart count in navbar
+    fetch('/api/get-cart')
+        .then(response => response.json())
+        .then(data => {
+            const cartCountElements = document.querySelectorAll('.cart-count');
+            cartCountElements.forEach(element => {
+                if (data.count > 0) {
+                    element.textContent = data.count;
+                    element.classList.remove('hidden');
+                } else {
+                    element.classList.add('hidden');
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error updating cart count:', error);
+        });
+}
+
+function showToast(message, type = 'info') {
+    const toast = document.getElementById('toast');
+    const bgColor = type === 'success' ? 'bg-green-500' : 
+                    type === 'error' ? 'bg-red-500' : 
+                    'bg-blue-500';
+    
+    toast.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg text-white font-medium z-50 transform transition-all duration-300 ${bgColor}`;
+    toast.textContent = message;
+    toast.classList.remove('hidden', 'translate-x-full');
+    
+    setTimeout(() => {
+        toast.classList.add('translate-x-full');
+        setTimeout(() => toast.classList.add('hidden'), 300);
+    }, 3000);
+}
+
+// Filter functionality
+function initializeFilters() {
+    console.log("🔍 Initializing filters");
+
+    const searchInput = document.getElementById('searchInput');
+    const conditionFilter = document.getElementById('conditionFilter');
+    const priceFilter = document.getElementById('priceFilter');
+    const resetButton = document.getElementById('resetFilters');
+
+    if (searchInput && conditionFilter && priceFilter && resetButton) {
+        console.log("✅ All filter elements found");
+
+        // Add event listeners
+        searchInput.addEventListener('input', filterBooks);
+        conditionFilter.addEventListener('change', filterBooks);
+        priceFilter.addEventListener('change', filterBooks);
+        resetButton.addEventListener('click', resetFilters);
+
+        console.log("✅ Filter event listeners attached");
+
+        // Initial filter
+        filterBooks();
+    } else {
+        console.log("❌ Some filter elements missing");
+    }
+}
+
+function filterBooks() {
+    const searchInput = document.getElementById('searchInput');
+    const conditionFilter = document.getElementById('conditionFilter');
+    const priceFilter = document.getElementById('priceFilter');
+
+    if (!searchInput || !conditionFilter || !priceFilter) {
+        return;
+    }
+
+    const searchTerm = searchInput.value.toLowerCase();
+    const condition = conditionFilter.value;
+    const priceRange = priceFilter.value;
+
+    console.log(`🔍 Filtering - Search: "${searchTerm}", Condition: "${condition}", Price: "${priceRange}"`);
+
+    let visibleBooks = 0;
+    const bookCards = document.querySelectorAll('.book-card');
+
+    bookCards.forEach((card) => {
+        const title = card.dataset.title ? card.dataset.title.toLowerCase() : '';
+        const author = card.dataset.author ? card.dataset.author.toLowerCase() : '';
+        const bookCondition = card.dataset.condition || '';
+        const price = parseFloat(card.dataset.price) || 0;
+
+        const matchesSearch = title.includes(searchTerm) || author.includes(searchTerm);
+        const matchesCondition = !condition || bookCondition === condition;
+        const matchesPrice = !priceRange || checkPriceRange(price, priceRange);
+
+        if (matchesSearch && matchesCondition && matchesPrice) {
+            card.style.display = 'block';
+            visibleBooks++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+
+    console.log(`📊 Visible books: ${visibleBooks}`);
+
+    // Update books count
+    const booksCountElement = document.getElementById('booksCount');
+    if (booksCountElement) {
+        booksCountElement.textContent = visibleBooks;
+    }
+
+    // Show/hide no results message
+    const noResultsElement = document.getElementById('noResults');
+    const booksGrid = document.getElementById('booksGrid');
+
+    if (visibleBooks === 0 && bookCards.length > 0) {
+        if (!noResultsElement && booksGrid) {
+            const noResults = document.createElement('div');
+            noResults.id = 'noResults';
+            noResults.className = 'col-span-full text-center py-12 bg-white rounded-2xl shadow-lg';
+            noResults.innerHTML = `
+                <div class="text-4xl mb-4">🔍</div>
+                <p class="text-gray-500 text-lg mb-2">No books match your search criteria.</p>
+                <p class="text-gray-500 mb-4">Try adjusting your filters or search terms.</p>
+                <button onclick="resetFilters()" class="bg-emerald-500 text-white px-6 py-2 rounded-lg hover:bg-emerald-600 transition duration-300">
+                    Reset Filters
+                </button>
+            `;
+            booksGrid.appendChild(noResults);
+        }
+    } else if (noResultsElement) {
+        noResultsElement.remove();
+    }
+}
+
+function checkPriceRange(price, range) {
+    switch (range) {
+        case '0-20': return price <= 20;
+        case '20-50': return price > 20 && price <= 50;
+        case '50-100': return price > 50 && price <= 100;
+        case '100+': return price > 100;
+        default: return true;
+    }
+}
+
+function resetFilters() {
+    console.log("🔄 Resetting filters");
+    const searchInput = document.getElementById('searchInput');
+    const conditionFilter = document.getElementById('conditionFilter');
+    const priceFilter = document.getElementById('priceFilter');
+
+    if (searchInput && conditionFilter && priceFilter) {
+        searchInput.value = '';
+        conditionFilter.value = '';
+        priceFilter.value = '';
+        filterBooks();
+    }
+}
+
+// Initialize everything when page loads
+document.addEventListener('DOMContentLoaded', function () {
+    console.log("🚀 Page fully loaded");
+
+    // Get actual book count from DOM
+    const bookCards = document.querySelectorAll('.book-card');
+    console.log(`📚 Number of books: ${bookCards.length}`);
+
+    // Initialize filters
+    initializeFilters();
+
+    console.log("✅ All components initialized");
+});
+
+// Global functions for HTML onclick
+window.addToCart = addToCart;
+window.resetFilters = resetFilters;
+</script>
+{% endblock %}
