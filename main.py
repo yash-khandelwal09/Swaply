@@ -41,7 +41,7 @@ def index():
         # Debug: Print book data to console
         print("📚 Books data being sent to template:")
         for book in latest_books:
-            print(f"   - {book.get('title')}: ${book.get('price')} (ID: {book.get('id')})")
+            print(f"   - {book.get('title')}: ₹{book.get('price')} (ID: {book.get('id')})")
             
         return render_template('index.html', latest_books=latest_books)
     except Exception as e:
@@ -487,7 +487,7 @@ def place_order():
         print(f"📦 Order placed successfully: {order_id}")
         print(f"   Book: {book.get('title')}")
         print(f"   Customer: {full_name} ({phone_number})")
-        print(f"   Total: ${book.get('price')}")
+        print(f"   Total: ₹{book.get('price')}")
         
         return jsonify({
             'success': True, 
@@ -800,7 +800,7 @@ def get_book(book_id):
                 'description': book.get('description'),
                 'status': book.get('status')
             }
-            print(f"✅ API: Returning book: {book_data['title']} with price: ${book_data['price']}")
+            print(f"✅ API: Returning book: {book_data['title']} with price: ₹{book_data['price']}")
             return jsonify(book_data)
         else:
             print(f"❌ API: Book not found: {book_id}")
@@ -820,7 +820,7 @@ def force_price_fix():
         'id': book_id,
         'title': 'Mathematics Textbook',
         'author': 'John Smith', 
-        'price': 25.00,  # GUARANTEED PRICE
+        'price': 85.00,  # GUARANTEED PRICE IN RUPEES
         'condition': 'Good',
         'isbn': '47923578',
         'description': 'Great condition with minimal highlighting',
@@ -864,7 +864,7 @@ def debug_users():
     
     return jsonify({'error': 'Users sheet not connected'})
 
-@app.route('/debug- orders')
+@app.route('/debug-orders')
 def debug_orders():
     """Debug route to check orders"""
     if db.using_memory_storage:

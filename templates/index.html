@@ -8,8 +8,7 @@
             <span class="bg-clip-text text-transparent bg-gradient-to-r from-white to-emerald-200">SWAPLY</span>
         </h1>
         <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed">
-            Your school's premier platform for buying textbooks. Save money and get
-            the books you need from fellow students.
+            Delhi's smartest platform for buying & selling books
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="{{ url_for('books') }}"
@@ -27,7 +26,7 @@
             Why Choose SWAPLY?
         </h2>
         <p class="text-gray-600 text-center mb-12 text-lg max-w-2xl mx-auto">
-            We make textbook shopping simple, safe, and student-friendly
+            Buy Smart, Sell Smart - Your trusted book exchange platform
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -37,10 +36,9 @@
                 <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <span class="text-3xl">💰</span>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4">Save Money</h3>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Affordable Books</h3>
                 <p class="text-gray-600 leading-relaxed">
-                    Buy textbooks at 50-70% off retail prices from fellow students. No
-                    more expensive bookstore markups!
+                    Get books at affordable prices from readers across Delhi. Build your collection without breaking the bank!
                 </p>
             </div>
 
@@ -50,10 +48,9 @@
                 <div class="w-20 h-20 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <span class="text-3xl">🛡️</span>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4">Trusted Community</h3>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Verified Users</h3>
                 <p class="text-gray-600 leading-relaxed">
-                    Connect directly with verified students in your school. All profiles
-                    are authenticated through school email.
+                    All users are properly verified for safe transactions. Connect with genuine book lovers in Delhi.
                 </p>
             </div>
 
@@ -63,10 +60,9 @@
                 <div class="w-20 h-20 bg-cyan-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <span class="text-3xl">⚡</span>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4">Easy & Fast</h3>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Quick Delivery</h3>
                 <p class="text-gray-600 leading-relaxed">
-                    Find the books you need quickly. Browse available textbooks with
-                    filters and connect with sellers easily.
+                    Fast delivery service across Delhi. Get your books delivered quickly and conveniently to your doorstep.
                 </p>
             </div>
         </div>
@@ -80,7 +76,7 @@
             Recently Added Books
         </h2>
         <p class="text-gray-600 text-center mb-12 text-lg">
-            Check out the latest textbooks available for purchase
+            Check out the latest books available for purchase
         </p>
 
         {% if latest_books %}
@@ -94,7 +90,7 @@
                         <span class="bg-emerald-100 text-emerald-800 text-sm px-3 py-1 rounded-full font-semibold">
                             {{ book.condition or 'Good' }}
                         </span>
-                        <span class="text-2xl font-bold text-emerald-600">${{ book.price | default(0) }}</span>
+                        <span class="text-2xl font-bold text-emerald-600">₹{{ book.price | default(0) }}</span>
                     </div>
 
                     <!-- Book Title & Author -->
@@ -149,33 +145,25 @@
     </div>
 </section>
 
-<!-- Stats Section -->
+<!-- Community Section -->
 <section class="py-16 bg-white">
     <div class="max-w-7xl mx-auto px-4">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div>
-                <div class="text-3xl md:text-4xl font-bold text-emerald-600 mb-2">
-                    500+
-                </div>
-                <div class="text-gray-600">Books Available</div>
-            </div>
-            <div>
-                <div class="text-3xl md:text-4xl font-bold text-emerald-600 mb-2">
-                    300+
-                </div>
-                <div class="text-gray-600">Happy Students</div>
-            </div>
-            <div>
-                <div class="text-3xl md:text-4xl font-bold text-emerald-600 mb-2">
-                    $15K+
-                </div>
-                <div class="text-gray-600">Money Saved</div>
-            </div>
-            <div>
-                <div class="text-3xl md:text-4xl font-bold text-emerald-600 mb-2">
-                    100%
-                </div>
-                <div class="text-gray-600">School Verified</div>
+        <div class="text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                Join Delhi's Growing Book Community
+            </h2>
+            <p class="text-gray-600 text-lg max-w-2xl mx-auto mb-8">
+                Connect with fellow readers, exchange stories, and build your perfect book collection
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{{ url_for('books') }}"
+                    class="bg-emerald-500 text-white px-8 py-4 rounded-xl hover:bg-emerald-600 transition duration-300 font-bold text-lg shadow-lg hover:shadow-xl">
+                    📚 Browse Books
+                </a>
+                <a href="mailto:swaply.swap@gmail.com"
+                    class="bg-gray-800 text-white px-8 py-4 rounded-xl hover:bg-gray-900 transition duration-300 font-bold text-lg shadow-lg hover:shadow-xl">
+                    📖 Sell Your Books
+                </a>
             </div>
         </div>
     </div>
@@ -188,20 +176,19 @@
             How SWAPLY Works
         </h2>
         <p class="text-gray-600 text-center mb-12 text-lg max-w-2xl mx-auto">
-            Simple steps to get the textbooks you need
+            Simple steps to buy and sell books in Delhi
         </p>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
             <!-- Step 1 -->
             <div class="text-center bg-white p-8 rounded-2xl shadow-lg border border-emerald-100">
                 <div
                     class="w-16 h-16 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold shadow-md">
                     1
                 </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4">Browse & Search</h3>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Browse Books</h3>
                 <p class="text-gray-600 leading-relaxed">
-                    Find the textbooks you need using our search and filter options.
-                    Browse by subject, condition, or price.
+                    Find your required books from our collection. Search by title, author, or category.
                 </p>
             </div>
 
@@ -213,8 +200,7 @@
                 </div>
                 <h3 class="text-2xl font-bold text-gray-800 mb-4">Login & Order</h3>
                 <p class="text-gray-600 leading-relaxed">
-                    Sign in with your Google account to add books to cart or buy
-                    immediately. Secure and easy checkout process.
+                    Secure user verification process. Add to cart or buy directly with easy checkout.
                 </p>
             </div>
 
@@ -224,10 +210,21 @@
                     class="w-16 h-16 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold shadow-md">
                     3
                 </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4">Complete Purchase</h3>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Get Delivery</h3>
                 <p class="text-gray-600 leading-relaxed">
-                    Fill out your delivery details, choose payment method, and complete
-                    your purchase safely.
+                    Books delivered across Delhi. Fast and reliable delivery to your doorstep.
+                </p>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="text-center bg-white p-8 rounded-2xl shadow-lg border border-emerald-100">
+                <div
+                    class="w-16 h-16 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold shadow-md">
+                    4
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Sell Your Books</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Contact us at swaply.swap@gmail.com to sell your books and join our community.
                 </p>
             </div>
         </div>

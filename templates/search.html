@@ -22,10 +22,10 @@
             <select id="priceFilter"
                 class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="">Any Price</option>
-                <option value="0-20">$0 - $20</option>
-                <option value="20-50">$20 - $50</option>
-                <option value="50-100">$50 - $100</option>
-                <option value="100+">$100+</option>
+                <option value="50-100">₹50 - ₹100</option>
+                <option value="100-250">₹100 - ₹250</option>
+                <option value="250-400">₹250 - ₹400</option>
+                <option value="400+">₹400+</option>
             </select>
             <button id="resetFilters"
                 class="bg-gray-500 text-white rounded-lg px-4 py-2 hover:bg-gray-600 transition duration-300">Reset
@@ -40,7 +40,7 @@
         </p>
         <div class="flex items-center space-x-2 text-sm text-gray-500">
             <span>💡</span>
-            <span>Login to add books to cart or purchase</span>
+            <span>Login to buy books from Delhi's book community</span>
         </div>
     </div>
 
@@ -57,7 +57,7 @@
                     <span class="bg-emerald-100 text-emerald-800 text-sm px-3 py-1 rounded-full font-semibold">
                         {{ book.condition or 'Good' }}
                     </span>
-                    <span class="text-2xl font-bold text-emerald-600">${{ book.price }}</span>
+                    <span class="text-2xl font-bold text-emerald-600">₹{{ book.price }}</span>
                 </div>
 
                 <!-- Book Info -->
@@ -97,7 +97,7 @@
                     <!-- Additional Info -->
                     <div class="text-center pt-2">
                         <p class="text-xs text-gray-500">
-                            Listed on: {{ book.timestamp or 'Recently' }}
+                            Delivery available across Delhi
                         </p>
                         <p class="text-xs text-gray-500 mt-1">
                             Status: <span class="text-emerald-600 font-semibold">{{ book.status or 'Available' }}</span>
@@ -110,7 +110,14 @@
         <div class="col-span-full text-center py-16 bg-white rounded-2xl shadow-lg">
             <div class="text-6xl mb-4">📚</div>
             <p class="text-gray-500 text-xl mb-4">No books available at the moment.</p>
-            <p class="text-gray-500 mb-6">Check back soon for new book listings!</p>
+            <p class="text-gray-500 mb-6">Check back soon for new book listings from Delhi readers!</p>
+            <div class="mt-4">
+                <p class="text-sm text-gray-600 mb-2">Want to sell your books?</p>
+                <a href="mailto:swaply.swap@gmail.com" 
+                   class="inline-block bg-gray-800 text-white px-6 py-3 rounded-lg hover:bg-gray-900 transition duration-300 font-semibold">
+                    📧 Contact Us to Sell
+                </a>
+            </div>
         </div>
         {% endfor %}
     </div>
@@ -284,10 +291,10 @@ function filterBooks() {
 
 function checkPriceRange(price, range) {
     switch (range) {
-        case '0-20': return price <= 20;
-        case '20-50': return price > 20 && price <= 50;
-        case '50-100': return price > 50 && price <= 100;
-        case '100+': return price > 100;
+        case '50-100': return price >= 50 && price <= 100;
+        case '100-250': return price > 100 && price <= 250;
+        case '250-400': return price > 250 && price <= 400;
+        case '400+': return price > 400;
         default: return true;
     }
 }

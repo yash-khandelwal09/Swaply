@@ -25,22 +25,32 @@ class GoogleSheetsDB:
         """Initialize memory storage with sample data"""
         print("🔄 Initializing memory storage...")
         
-        # Sample books data
+        # Sample books data with Indian price ranges
         self.books_storage = [
             {
-                'id': '1', 'title': 'Mathematics Textbook', 'author': 'John Smith', 'price': 25.00, 
+                'id': '1', 'title': 'Mathematics Textbook', 'author': 'John Smith', 'price': 85.00, 
                 'condition': 'Good', 'isbn': '47923578', 'description': 'Great condition with minimal highlighting',
                 'category': 'Academic', 'timestamp': '2024-01-15', 'status': 'Available'
             },
             {
-                'id': '2', 'title': 'Physics Guide', 'author': 'Sarah Johnson', 'price': 30.00, 
+                'id': '2', 'title': 'Physics Guide', 'author': 'Sarah Johnson', 'price': 120.00, 
                 'condition': 'Like New', 'isbn': '987654321', 'description': 'Almost new, no markings',
                 'category': 'Academic', 'timestamp': '2024-01-14', 'status': 'Available'
             },
             {
-                'id': '3', 'title': 'Chemistry Fundamentals', 'author': 'Dr. Robert Brown', 'price': 28.50, 
+                'id': '3', 'title': 'Chemistry Fundamentals', 'author': 'Dr. Robert Brown', 'price': 95.50, 
                 'condition': 'Excellent', 'isbn': '555123456', 'description': 'Latest edition, barely used',
                 'category': 'Academic', 'timestamp': '2024-01-16', 'status': 'Available'
+            },
+            {
+                'id': '4', 'title': 'Fiction Novel Collection', 'author': 'Various Authors', 'price': 150.00, 
+                'condition': 'Good', 'isbn': '789012345', 'description': 'Collection of popular fiction novels',
+                'category': 'Fiction', 'timestamp': '2024-01-17', 'status': 'Available'
+            },
+            {
+                'id': '5', 'title': 'Business Strategy', 'author': 'Michael Kumar', 'price': 280.00, 
+                'condition': 'Like New', 'isbn': '345678901', 'description': 'Business strategy guide for entrepreneurs',
+                'category': 'Business', 'timestamp': '2024-01-18', 'status': 'Available'
             }
         ]
         
@@ -209,7 +219,7 @@ class GoogleSheetsDB:
                 }
                 
                 books.append(book_data)
-                print(f"📖 Loaded: {book_data['title']} - ${book_data['price']}")
+                print(f"📖 Loaded: {book_data['title']} - ₹{book_data['price']}")
             
             print(f"✅ Loaded {len(books)} books from Google Sheets")
             return books
@@ -255,16 +265,20 @@ class GoogleSheetsDB:
         except:
             pass
         
-        # Method 4: Hardcoded prices based on book ID
+        # Method 4: Hardcoded prices based on book ID (Indian price ranges)
         book_id_str = str(book_id).strip()
         if book_id_str == '1':
-            price = 25.00
+            price = 85.00
         elif book_id_str == '2':
-            price = 30.00
+            price = 120.00
         elif book_id_str == '3':
-            price = 28.50
+            price = 95.50
+        elif book_id_str == '4':
+            price = 150.00
+        elif book_id_str == '5':
+            price = 280.00
         else:
-            price = 20.00  # Default price
+            price = 100.00  # Default price in Indian range
         
         print(f"✅ Method 4 - Hardcoded price: {price}")
         return price
@@ -281,7 +295,7 @@ class GoogleSheetsDB:
         book = next((b for b in all_books if str(b.get('id')).strip() == str(book_id).strip()), None)
         
         if book:
-            print(f"✅ Found book: {book.get('title')}, Price: {book.get('price')}")
+            print(f"✅ Found book: {book.get('title')}, Price: ₹{book.get('price')}")
             return book
         else:
             print(f"❌ Book not found: '{book_id}'")
@@ -413,4 +427,4 @@ class GoogleSheetsDB:
             return []
 
 # Global instance
-db = GoogleSheetsDB()   
+db = GoogleSheetsDB()

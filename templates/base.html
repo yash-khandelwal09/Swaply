@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}SWAPLY - School Book Store{% endblock %}</title>
+    <title>{% block title %}SWAPLY - Delhi's Book Exchange{% endblock %}</title>
     <!-- Tailwind CSS -->
     <link rel="stylesheet" href="/static/css/output.css">
     <!-- Custom Utilities -->
@@ -18,57 +18,68 @@
             <div class="flex justify-between items-center py-4">
                 <!-- Logo -->
                 <div class="flex items-center space-x-3">
-                    <a href="/"><img src="/static/assets/Untitled design.png" alt="" class="md:w-14 md:h-14  w-10 h-10 rounded-full"></a>
-                    <span
-                        class="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-700 bg-clip-text text-transparent">SWAPLY</span>
+                    <a href="/"><img src="/static/assets/Untitled design.png" alt="" class="md:w-14 md:h-14 w-10 h-10 rounded-full"></a>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-700 bg-clip-text text-transparent">SWAPLY</span>
                 </div>
 
-               <!-- Desktop Navigation Links -->
-<div class="hidden md:flex items-center space-x-8">
-    <a href="{{ url_for('index') }}"
-        class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 border-b-2 border-transparent hover:border-emerald-500">Home</a>
-    <a href="{{ url_for('books') }}"
-        class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 border-b-2 border-transparent hover:border-emerald-500">Shop Books</a>
-    {% if session.user_id %}
-    <a href="{{ url_for('manage') }}"
-        class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 border-b-2 border-transparent hover:border-emerald-500">My Account</a>
-    <a href="/cart" class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 border-b-2 border-transparent hover:border-emerald-500 relative">
-        🛒 Cart
-        <span id="cartCount" class="absolute -top-2 -right-4 bg-emerald-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
-    </a>
-    <button onclick="logout()"
-        class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300 font-medium">Logout</button>
-    {% else %}
-    <a href="{{ url_for('login') }}"
-        class="bg-emerald-500 text-white px-6 py-2 rounded-lg hover:bg-emerald-600 transition duration-300 font-medium">Login</a>
-    {% endif %}
-</div>
+                <!-- Desktop Navigation Links -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="{{ url_for('index') }}"
+                        class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 border-b-2 border-transparent hover:border-emerald-500">Home</a>
+                    <a href="{{ url_for('books') }}"
+                        class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 border-b-2 border-transparent hover:border-emerald-500">Shop Books</a>
+                    {% if session.user_id %}
+                    <a href="{{ url_for('manage') }}"
+                        class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 border-b-2 border-transparent hover:border-emerald-500">My Account</a>
+                    <a href="/cart" class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 border-b-2 border-transparent hover:border-emerald-500 relative">
+                        🛒 Cart
+                        <span id="cartCount" class="absolute -top-2 -right-4 bg-emerald-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+                    </a>
+                    <button onclick="logout()"
+                        class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300 font-medium">Logout</button>
+                    {% else %}
+                    <a href="{{ url_for('login') }}"
+                        class="bg-emerald-500 text-white px-6 py-2 rounded-lg hover:bg-emerald-600 transition duration-300 font-medium">Login</a>
+                    {% endif %}
+                </div>
 
-<div class="md:hidden">
-    <button id="mobile-menu-button"
-        class="text-gray-700 hover:text-emerald-600 transition duration-300">
-        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-    </button>
-</div>
-<!-- Mobile Menu -->
-<div id="mobile-menu" class="md:hidden hidden pb-4 border-t border-gray-200 mt-2">
-    <div class="flex flex-col space-y-3">
-        <a href="{{ url_for('index') }}"
-            class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 px-4 rounded-lg hover:bg-emerald-50">Home</a>
-        <a href="{{ url_for('books') }}"
-            class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 px-4 rounded-lg hover:bg-emerald-50">Shop Books</a>
-        {% if session.user_id %}
-        <a href="{{ url_for('manage') }}"
-            class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 px-4 rounded-lg hover:bg-emerald-50">My Account</a>
-        <a href="/cart"
-            class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 px-4 rounded-lg hover:bg-emerald-50">🛒 Cart</a>
-        {% endif %}
-    </div>
-</div>
                 <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    {% if session.user_id %}
+                    <a href="/cart" class="text-gray-700 mr-4 relative">
+                        🛒
+                        <span id="mobileCartCount" class="absolute -top-2 -right-2 bg-emerald-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+                    </a>
+                    {% endif %}
+                    <button id="mobile-menu-button" class="text-gray-700 hover:text-emerald-600 transition duration-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white border-t border-gray-200 shadow-lg">
+            <div class="px-4 py-4 space-y-3">
+                <a href="{{ url_for('index') }}"
+                    class="block text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 px-4 rounded-lg hover:bg-emerald-50">Home</a>
+                <a href="{{ url_for('books') }}"
+                    class="block text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 px-4 rounded-lg hover:bg-emerald-50">Shop Books</a>
+                {% if session.user_id %}
+                <a href="{{ url_for('manage') }}"
+                    class="block text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 px-4 rounded-lg hover:bg-emerald-50">My Account</a>
+                <a href="/cart"
+                    class="block text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 px-4 rounded-lg hover:bg-emerald-50">🛒 Cart</a>
+                <button onclick="logout()"
+                    class="w-full text-left bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300 font-medium mt-2">Logout</button>
+                {% else %}
+                <a href="{{ url_for('login') }}"
+                    class="block bg-emerald-500 text-white text-center px-4 py-2 rounded-lg hover:bg-emerald-600 transition duration-300 font-medium">Login</a>
+                {% endif %}
+            </div>
+        </div>
     </nav>
 
     <!-- Main Content -->
@@ -83,27 +94,22 @@
                 <!-- Brand -->
                 <div class="col-span-1 md:col-span-2">
                     <div class="flex items-center space-x-3 mb-4">
-                        <div
-                            class="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center text-white font-bold">
+                        <div class="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center text-white font-bold">
                             S
                         </div>
                         <span class="text-xl font-bold text-white">SWAPLY</span>
                     </div>
                     <p class="text-gray-300 mb-4 max-w-md">
-                        Your school's trusted platform for buying textbooks. Connect with fellow students
-                        and save money on course materials.
+                        Delhi's smartest platform for buying & selling books. Connect with readers across Delhi and build your book collection affordably.
                     </p>
                     <div class="flex space-x-4">
-                        <div
-                            class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-emerald-500 transition duration-300 cursor-pointer">
+                        <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-emerald-500 transition duration-300 cursor-pointer">
                             <span class="text-white font-semibold">f</span>
                         </div>
-                        <div
-                            class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-emerald-500 transition duration-300 cursor-pointer">
+                        <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-emerald-500 transition duration-300 cursor-pointer">
                             <span class="text-white font-semibold">t</span>
                         </div>
-                        <div
-                            class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-emerald-500 transition duration-300 cursor-pointer">
+                        <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-emerald-500 transition duration-300 cursor-pointer">
                             <span class="text-white font-semibold">in</span>
                         </div>
                     </div>
@@ -124,20 +130,210 @@
                 <!-- Contact -->
                 <div>
                     <h3 class="text-lg font-semibold mb-4 text-white">Need Help?</h3>
-                    <p class="text-gray-300 mb-2">📧 support@swaplly.school</p>
-                    <p class="text-gray-300">📞 (555) 123-4567</p>
-                    <p class="text-gray-300 mt-2">🏫 School Campus</p>
+                    <p class="text-gray-300 mb-2">📧 swaply.swap@gmail.com</p>
+                    <p class="text-gray-300">📍 Delhi, India</p>
+                    <p class="text-gray-300 mt-2">📚 Buy Smart, Sell Smart</p>
                 </div>
             </div>
 
             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
-                <p>&copy; 2024 SWAPLY. All rights reserved. Made for school entrepreneurship project.</p>
+                <p>&copy; 2025 SWAPLY. All rights reserved.</p>
+                <p class="mt-2 text-sm">Concept by: Yashika, Sakshi, Divya, Rubhi, Khushi</p>
+                <p class="text-sm">Design & Development by: Yash Khandelwal</p>
+                <p class="text-sm">GitHub: <a href="https://github.com/dot-codr" class="text-emerald-400 hover:text-emerald-300">https://github.com/dot-codr</a></p>
             </div>
         </div>
     </footer>
 
     <!-- JavaScript -->
-    <script src="/static/js/script.js"></script>
+    <script>
+        // Mobile menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("🚀 SWAPLY JavaScript loaded");
+            
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            if (mobileMenuButton && mobileMenu) {
+                console.log("📱 Mobile menu elements found");
+                
+                mobileMenuButton.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                    console.log("🍔 Mobile menu button clicked");
+                    
+                    const isHidden = mobileMenu.classList.contains('hidden');
+                    
+                    if (isHidden) {
+                        mobileMenu.classList.remove('hidden');
+                        mobileMenu.classList.add('block');
+                        console.log("📱 Mobile menu opened");
+                    } else {
+                        mobileMenu.classList.add('hidden');
+                        mobileMenu.classList.remove('block');
+                        console.log("📱 Mobile menu closed");
+                    }
+                });
+            } else {
+                console.log("❌ Mobile menu elements not found");
+            }
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('#mobile-menu') && !event.target.closest('#mobile-menu-button')) {
+                    if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                        mobileMenu.classList.remove('block');
+                        console.log("📱 Mobile menu closed (outside click)");
+                    }
+                }
+            });
+
+            // Update cart counts on page load
+            updateCartCount();
+        });
+
+        // Toast notification function
+        function showToast(message, type = 'success') {
+            console.log(`🍞 Toast: ${message} (${type})`);
+            
+            // Remove existing toasts
+            const existingToasts = document.querySelectorAll('[id^="toast-"]');
+            existingToasts.forEach(toast => toast.remove());
+            
+            const toastId = 'toast-' + Date.now();
+            const toast = document.createElement('div');
+            toast.id = toastId;
+            toast.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg text-white font-semibold z-50 transform transition-all duration-300 ${
+                type === 'success' ? 'bg-emerald-500' : 'bg-red-500'
+            }`;
+            toast.textContent = message;
+            
+            document.body.appendChild(toast);
+            
+            // Animate in
+            setTimeout(() => {
+                toast.classList.add('opacity-100');
+            }, 10);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+                setTimeout(() => {
+                    if (document.getElementById(toastId)) {
+                        toast.remove();
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Logout function
+        function logout() {
+            console.log("🚪 Logging out...");
+            
+            fetch('/api/logout')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast('Logged out successfully', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/';
+                        }, 1000);
+                    } else {
+                        showToast('Logout failed', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Logout error:', error);
+                    showToast('Network error during logout', 'error');
+                });
+        }
+
+        // Cart functionality
+        function updateCartCount() {
+            const cartCount = document.getElementById('cartCount');
+            const mobileCartCount = document.getElementById('mobileCartCount');
+            
+            if (!cartCount && !mobileCartCount) {
+                console.log("🛒 No cart count elements found");
+                return;
+            }
+            
+            console.log("🛒 Updating cart count...");
+            
+            fetch('/api/get-cart')
+                .then(response => response.json())
+                .then(data => {
+                    console.log("🛒 Cart data:", data);
+                    
+                    if (cartCount) {
+                        if (data.count > 0) {
+                            cartCount.textContent = data.count;
+                            cartCount.classList.remove('hidden');
+                            console.log(`🛒 Desktop cart count: ${data.count}`);
+                        } else {
+                            cartCount.classList.add('hidden');
+                            console.log("🛒 Desktop cart count: 0 (hidden)");
+                        }
+                    }
+                    
+                    if (mobileCartCount) {
+                        if (data.count > 0) {
+                            mobileCartCount.textContent = data.count;
+                            mobileCartCount.classList.remove('hidden');
+                            console.log(`🛒 Mobile cart count: ${data.count}`);
+                        } else {
+                            mobileCartCount.classList.add('hidden');
+                            console.log("🛒 Mobile cart count: 0 (hidden)");
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Error updating cart count:', error);
+                });
+        }
+
+        // Add to cart function
+        function addToCart(bookId) {
+            console.log("🛒 Adding to cart:", bookId);
+            
+            if (!bookId) {
+                showToast('Book ID is required', 'error');
+                return;
+            }
+            
+            fetch('/api/add-to-cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    book_id: bookId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message || 'Book added to cart!', 'success');
+                    updateCartCount();
+                } else {
+                    showToast(data.error || 'Failed to add to cart', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('❌ Error adding to cart:', error);
+                showToast('Network error. Please try again.', 'error');
+            });
+        }
+
+        // Make functions globally available
+        window.updateCartCount = updateCartCount;
+        window.addToCart = addToCart;
+        window.showToast = showToast;
+        window.logout = logout;
+
+        console.log("✅ All JavaScript functions loaded and ready!");
+    </script>
+    
     {% block scripts %}{% endblock %}
 </body>
 
