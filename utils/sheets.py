@@ -1,7 +1,7 @@
 import gspread
 import os
 from datetime import datetime
-import time
+import json
 
 class GoogleSheetsDB:
     def __init__(self):
@@ -15,60 +15,63 @@ class GoogleSheetsDB:
         self.using_memory_storage = True
         self.connection_attempted = False
         
-        # Initialize EMPTY memory storage
+        # Initialize empty storage (no sample data)
         self._init_memory_storage()
         
-        # Try to connect to Google Sheets
-        self.connect_async()
+        # Try to connect immediately (blocking)
+        self._connect_to_sheets()
     
     def _init_memory_storage(self):
-        """Initialize EMPTY memory storage"""
+        """Initialize empty memory storage"""
         print("🔄 Initializing memory storage...")
-        
-        # EMPTY books data - no sample books
-        self.books_storage = []
-        
+        self.books_storage = []  # NO SAMPLE DATA
         self.users_storage = []
         self.orders_storage = []
-        
-        print("✅ Memory storage initialized (EMPTY)")
+        print("✅ Memory storage initialized (empty)")
 
-    def connect_async(self):
-        """Try to connect to Google Sheets in background"""
-        import threading
-        
-        def connect_thread():
-            print("🔍 Attempting to connect to Google Sheets...")
-            try:
-                self._connect_to_sheets()
-            except Exception as e:
-                print(f"❌ Google Sheets connection failed: {e}")
-        
-        thread = threading.Thread(target=connect_thread)
-        thread.daemon = True
-        thread.start()
-    
     def _connect_to_sheets(self):
-        """Connect to Google Sheets"""
+        """Connect to Google Sheets (BLOCKING)"""
+        print("\n" + "="*60)
+        print("🔍 Attempting to connect to Google Sheets...")
+        print("="*60)
+        
         try:
-            # Check if credentials file exists
+            # Check credentials file
             if not os.path.exists('credentials.json'):
-                print("❌ credentials.json file not found")
-                print("💡 Please download credentials.json from Google Cloud Console")
+                print("❌ credentials.json NOT FOUND")
+                print("💡 Please download credentials.json from:")
+                print("   https://console.cloud.google.com/apis/credentials")
+                print("   Then place it in the same folder as this script")
+                self.connection_attempted = True
                 return
             
             print("✅ credentials.json found")
             
-            # Try to load credentials
+            # Verify credentials file is valid JSON
+            try:
+                with open('credentials.json', 'r') as f:
+                    creds = json.load(f)
+                    if 'type' not in creds or creds['type'] != 'service_account':
+                        print("❌ Invalid credentials.json - must be a service account key")
+                        self.connection_attempted = True
+                        return
+                print("✅ credentials.json is valid")
+            except json.JSONDecodeError:
+                print("❌ credentials.json is not valid JSON")
+                self.connection_attempted = True
+                return
+            
+            # Create API client
             try:
                 self.client = gspread.service_account(filename='credentials.json')
                 print("✅ Google Sheets API client created")
             except Exception as e:
                 print(f"❌ Failed to create API client: {e}")
+                self.connection_attempted = True
                 return
             
-            # Try to connect to each sheet
-            sheets_to_connect = [
+            # Connect to each sheet
+            sheets_config = [
                 (self.books_sheet_name, 'books_sheet'),
                 (self.users_sheet_name, 'users_sheet'), 
                 (self.orders_sheet_name, 'orders_sheet')
@@ -76,36 +79,42 @@ class GoogleSheetsDB:
             
             all_connected = True
             
-            for sheet_name, attr_name in sheets_to_connect:
+            for sheet_name, attr_name in sheets_config:
                 try:
-                    print(f"🔍 Connecting to {sheet_name}...")
+                    print(f"🔍 Connecting to '{sheet_name}'...")
                     spreadsheet = self.client.open(sheet_name)
                     setattr(self, attr_name, spreadsheet.sheet1)
-                    print(f"✅ Connected to {sheet_name}")
                     
-                    # Test reading data
+                    # Test read access
                     records = getattr(self, attr_name).get_all_records()
-                    print(f"   📊 Found {len(records)} records in {sheet_name}")
+                    print(f"✅ Connected to '{sheet_name}' ({len(records)} records)")
                     
                 except gspread.SpreadsheetNotFound:
-                    print(f"❌ Sheet '{sheet_name}' not found")
-                    print(f"💡 Please create a Google Sheet named: {sheet_name}")
+                    print(f"❌ Sheet '{sheet_name}' NOT FOUND")
+                    print(f"   Please create a Google Sheet named: {sheet_name}")
+                    print(f"   And share it with: {creds.get('client_email', 'your-service-account@...')}")
+                    all_connected = False
+                except gspread.exceptions.APIError as e:
+                    print(f"❌ API Error for '{sheet_name}': {e}")
                     all_connected = False
                 except Exception as e:
-                    print(f"❌ Error connecting to {sheet_name}: {e}")
+                    print(f"❌ Error connecting to '{sheet_name}': {e}")
                     all_connected = False
             
             if all_connected:
                 self.using_memory_storage = False
-                print("🎉 All Google Sheets connected successfully!")
+                print("\n🎉 ALL GOOGLE SHEETS CONNECTED SUCCESSFULLY!")
+                print("="*60 + "\n")
                 self.setup_headers()
             else:
-                print("⚠️  Some sheets failed to connect - using memory storage")
+                print("\n⚠️  SOME SHEETS FAILED - Using memory storage")
+                print("="*60 + "\n")
             
             self.connection_attempted = True
                 
         except Exception as e:
-            print(f"❌ Unexpected connection error: {e}")
+            print(f"❌ Unexpected error: {e}")
+            print("="*60 + "\n")
             self.connection_attempted = True
     
     def setup_headers(self):
@@ -115,200 +124,238 @@ class GoogleSheetsDB:
         
         try:
             # Books sheet headers
-            books_records = self.books_sheet.get_all_records()
-            if not books_records:
-                books_headers = ['id', 'title', 'author', 'price', 'condition', 'isbn', 'description', 'category', 'status', 'timestamp']
-                self.books_sheet.append_row(books_headers)
-                print("✅ Books sheet headers setup complete")
+            if self.books_sheet:
+                all_values = self.books_sheet.get_all_values()
+                if not all_values or len(all_values) == 0:
+                    headers = ['id', 'title', 'author', 'price', 'condition', 'isbn', 
+                              'description', 'category', 'status', 'stock_quantity', 'timestamp']
+                    self.books_sheet.append_row(headers)
+                    print("✅ Books sheet headers created")
             
             # Users sheet headers
-            users_records = self.users_sheet.get_all_records()
-            if not users_records:
-                users_headers = ['user_id', 'email', 'name', 'phone', 'address_line1', 'address_line2', 'city', 'state', 'zip_code', 'created_at', 'updated_at']
-                self.users_sheet.append_row(users_headers)
-                print("✅ Users sheet headers setup complete")
+            if self.users_sheet:
+                all_values = self.users_sheet.get_all_values()
+                if not all_values or len(all_values) == 0:
+                    headers = ['user_id', 'email', 'name', 'phone', 'address_line1', 
+                              'address_line2', 'city', 'state', 'zip_code', 'created_at', 'updated_at']
+                    self.users_sheet.append_row(headers)
+                    print("✅ Users sheet headers created")
             
             # Orders sheet headers
-            orders_records = self.orders_sheet.get_all_records()
-            if not orders_records:
-                orders_headers = ['order_id', 'user_id', 'user_email', 'book_id', 'book_title', 'quantity', 'total_price', 'full_name', 'phone', 'address_line1', 'address_line2', 'city', 'state', 'zip_code', 'payment_method', 'status', 'created_at']
-                self.orders_sheet.append_row(orders_headers)
-                print("✅ Orders sheet headers setup complete")
+            if self.orders_sheet:
+                all_values = self.orders_sheet.get_all_values()
+                if not all_values or len(all_values) == 0:
+                    headers = ['order_id', 'user_id', 'user_email', 'book_id', 'book_title', 
+                              'quantity', 'total_price', 'full_name', 'phone', 'address_line1', 
+                              'address_line2', 'city', 'state', 'zip_code', 'payment_method', 
+                              'status', 'created_at']
+                    self.orders_sheet.append_row(headers)
+                    print("✅ Orders sheet headers created")
                 
         except Exception as e:
             print(f"❌ Error setting up headers: {e}")
 
     def get_all_books(self):
-        """Get all books with GUARANTEED price parsing"""
+        """Get all books"""
         if self.using_memory_storage:
-            print("📚 Using memory storage for books")
+            print("📚 Using memory storage (books count: {})".format(len(self.books_storage)))
             return self.books_storage
         
         try:
             if not self.books_sheet:
-                print("❌ Books sheet not connected - using memory storage")
-                return self.books_storage
+                print("❌ Books sheet not connected")
+                return []
             
-            print("🔄 Loading books from Google Sheets...")
-            
-            # Get all values including headers
             all_values = self.books_sheet.get_all_values()
             
-            if len(all_values) <= 1:  # Only headers or empty
-                print("❌ No books found in sheet - returning EMPTY list")
-                return []  # Return EMPTY list instead of memory storage
+            if len(all_values) <= 1:
+                print("📚 No books in Google Sheet")
+                return []
             
             headers = all_values[0]
             books = []
             
-            print(f"📋 Sheet headers: {headers}")
-            
-            # Process each row (skip header)
             for row_index, row in enumerate(all_values[1:], start=2):
-                if not row or len(row) < 4:  # Skip empty rows or rows without basic data
+                if not row or len(row) < 4:
                     continue
                 
-                # Create book object from row data
+                # Create book dict
                 book = {}
                 for i, header in enumerate(headers):
-                    if i < len(row):
-                        book[header] = row[i]
-                    else:
-                        book[header] = ''
+                    book[header] = row[i] if i < len(row) else ''
                 
-                # 🎯 GUARANTEED PRICE FIX - MULTIPLE METHODS
-                price = self._parse_price_aggressive(book.get('id'), book.get('price', '0'), row_index)
+                # Parse price
+                try:
+                    price = float(str(book.get('price', '0')).replace('₹', '').replace(',', '').strip())
+                except:
+                    price = 0.0
+                
+                # Parse stock quantity
+                try:
+                    stock_qty = int(str(book.get('stock_quantity', '1')).strip())
+                except:
+                    stock_qty = 1
                 
                 book_data = {
                     'id': str(book.get('id', '')).strip(),
                     'title': book.get('title', 'Unknown Book'),
                     'author': book.get('author', 'Unknown Author'),
                     'price': price,
-                    'condition': book.get('condition', 'Unknown'),
+                    'condition': book.get('condition', 'Good'),
                     'isbn': book.get('isbn', ''),
                     'description': book.get('description', ''),
                     'category': book.get('category', ''),
                     'status': book.get('status', 'Available'),
+                    'stock_quantity': stock_qty,
                     'timestamp': book.get('timestamp', '')
                 }
                 
                 books.append(book_data)
-                print(f"📖 Loaded: {book_data['title']} - ₹{book_data['price']}")
             
             print(f"✅ Loaded {len(books)} books from Google Sheets")
             return books
             
         except Exception as e:
-            print(f"❌ Error loading books from Google Sheets: {e}")
-            return self.books_storage  # Return memory storage (which is now empty)
+            print(f"❌ Error loading books: {e}")
+            return []
 
-    def _parse_price_aggressive(self, book_id, raw_price, row_index):
-        """Aggressive price parsing with multiple fallback methods"""
-        print(f"💰 Parsing price for book {book_id}, row {row_index}: '{raw_price}'")
-        
-        # Method 1: Direct float conversion
-        try:
-            if isinstance(raw_price, (int, float)):
-                price = float(raw_price)
-                print(f"✅ Method 1 - Direct conversion: {price}")
-                return price
-        except:
-            pass
-        
-        # Method 2: String cleaning and conversion
-        try:
-            if isinstance(raw_price, str):
-                # Remove all non-numeric characters except decimal point
-                import re
-                cleaned = re.sub(r'[^\d.]', '', str(raw_price))
-                if cleaned and cleaned != '.':
-                    price = float(cleaned)
-                    print(f"✅ Method 2 - Cleaned string: {price}")
-                    return price
-        except:
-            pass
-        
-        # Method 3: Extract first number found
-        try:
-            import re
-            numbers = re.findall(r'\d+\.?\d*', str(raw_price))
-            if numbers:
-                price = float(numbers[0])
-                print(f"✅ Method 3 - Extracted number: {price}")
-                return price
-        except:
-            pass
-        
-        # Method 4: Default price if all parsing fails
-        price = 100.00  # Default price in Indian range
-        print(f"✅ Method 4 - Default price: {price}")
-        return price
-    
     def get_available_books(self):
-        """Get only available books"""
+        """Get only available books (status=Available AND stock > 0)"""
         all_books = self.get_all_books()
-        available = [book for book in all_books if book.get('status') == 'Available']
+        available = [book for book in all_books 
+                    if book.get('status', '').lower() == 'available' 
+                    and book.get('stock_quantity', 0) > 0]
+        print(f"📚 Available books: {len(available)}")
         return available
     
     def get_book_by_id(self, book_id):
         """Get specific book by ID"""
         all_books = self.get_all_books()
-        book = next((b for b in all_books if str(b.get('id')).strip() == str(book_id).strip()), None)
+        book_id_str = str(book_id).strip()
         
-        if book:
-            print(f"✅ Found book: {book.get('title')}, Price: ₹{book.get('price')}")
-            return book
-        else:
-            print(f"❌ Book not found: '{book_id}'")
-            return None
+        for book in all_books:
+            if str(book.get('id', '')).strip() == book_id_str:
+                print(f"✅ Found book: {book.get('title')} - ₹{book.get('price')}")
+                return book
+        
+        print(f"❌ Book not found: {book_id}")
+        return None
     
     def update_book_status(self, book_id, new_status):
-        """Update book status when sold"""
+        """Update book status"""
+        print(f"🔄 Updating book {book_id} status to: {new_status}")
+        
         if self.using_memory_storage:
             for book in self.books_storage:
-                if book.get('id') == book_id:
+                if str(book.get('id')).strip() == str(book_id).strip():
                     book['status'] = new_status
+                    print(f"✅ Status updated in memory")
                     return True
             return False
         
         try:
             if not self.books_sheet:
                 return False
-                
-            records = self.books_sheet.get_all_records()
-            for i, record in enumerate(records, start=2):
-                if record.get('id') == book_id:
-                    self.books_sheet.update_cell(i, 9, new_status)  # status is column 9
+            
+            all_values = self.books_sheet.get_all_values()
+            headers = all_values[0]
+            status_col_index = headers.index('status') + 1 if 'status' in headers else 9
+            
+            for row_index, row in enumerate(all_values[1:], start=2):
+                if len(row) > 0 and str(row[0]).strip() == str(book_id).strip():
+                    self.books_sheet.update_cell(row_index, status_col_index, new_status)
+                    print(f"✅ Status updated in Google Sheets")
                     return True
+            
             return False
         except Exception as e:
-            print(f"❌ Error updating book status: {e}")
+            print(f"❌ Error updating status: {e}")
+            return False
+    
+    def decrease_book_stock(self, book_id, quantity=1):
+        """Decrease book stock when someone buys it"""
+        print(f"📉 Decreasing stock for book {book_id} by {quantity}")
+        
+        if self.using_memory_storage:
+            for book in self.books_storage:
+                if str(book.get('id')).strip() == str(book_id).strip():
+                    current_stock = book.get('stock_quantity', 1)
+                    new_stock = max(0, current_stock - quantity)
+                    book['stock_quantity'] = new_stock
+                    
+                    # Auto-mark as Sold Out if stock reaches 0
+                    if new_stock == 0:
+                        book['status'] = 'Sold Out'
+                        print(f"✅ Stock: {current_stock} → {new_stock} (SOLD OUT)")
+                    else:
+                        print(f"✅ Stock: {current_stock} → {new_stock}")
+                    return True
+            return False
+        
+        try:
+            if not self.books_sheet:
+                return False
+            
+            all_values = self.books_sheet.get_all_values()
+            headers = all_values[0]
+            
+            # Find column indices
+            stock_col_index = headers.index('stock_quantity') + 1 if 'stock_quantity' in headers else 10
+            status_col_index = headers.index('status') + 1 if 'status' in headers else 9
+            
+            for row_index, row in enumerate(all_values[1:], start=2):
+                if len(row) > 0 and str(row[0]).strip() == str(book_id).strip():
+                    # Get current stock
+                    try:
+                        current_stock = int(row[stock_col_index - 1]) if len(row) >= stock_col_index else 1
+                    except:
+                        current_stock = 1
+                    
+                    # Calculate new stock
+                    new_stock = max(0, current_stock - quantity)
+                    
+                    # Update stock quantity
+                    self.books_sheet.update_cell(row_index, stock_col_index, new_stock)
+                    
+                    # If stock reaches 0, mark as Sold Out
+                    if new_stock == 0:
+                        self.books_sheet.update_cell(row_index, status_col_index, 'Sold Out')
+                        print(f"✅ Stock: {current_stock} → {new_stock} (SOLD OUT)")
+                    else:
+                        print(f"✅ Stock: {current_stock} → {new_stock}")
+                    
+                    return True
+            
+            return False
+        except Exception as e:
+            print(f"❌ Error decreasing stock: {e}")
             return False
     
     def save_user_info(self, user_data):
-        """Save or update user information - FIXED VERSION"""
-        print(f"💾 Saving user info for: {user_data.get('email')}")
+        """Save or update user information"""
+        print(f"💾 Saving user: {user_data.get('email')}")
         
         if self.using_memory_storage:
-            # Remove existing user and add new one
-            self.users_storage = [u for u in self.users_storage if u.get('email') != user_data.get('email')]
+            # Remove existing and add new
+            self.users_storage = [u for u in self.users_storage 
+                                 if u.get('email') != user_data.get('email')]
             self.users_storage.append(user_data)
-            print(f"✅ User saved to memory: {user_data.get('email')}")
+            print(f"✅ User saved to memory")
             return True
         
         try:
             if not self.users_sheet:
                 print("❌ Users sheet not connected")
                 return False
-                
-            # Get all records to find existing user
+            
             all_values = self.users_sheet.get_all_values()
+            user_email = user_data.get('email')
             user_exists = False
             row_index = None
             
-            # Skip header row, start from row 2
+            # Find existing user
             for i, row in enumerate(all_values[1:], start=2):
-                if len(row) > 1 and row[1] == user_data.get('email'):  # email is column B
+                if len(row) > 1 and row[1] == user_email:
                     user_exists = True
                     row_index = i
                     break
@@ -329,24 +376,19 @@ class GoogleSheetsDB:
             ]
             
             if user_exists and row_index:
-                # Update existing user
-                range_str = f'A{row_index}:K{row_index}'
-                self.users_sheet.update(range_str, [row_data])
-                print(f"✅ Updated existing user: {user_data.get('email')} at row {row_index}")
+                # Update existing
+                self.users_sheet.update(f'A{row_index}:K{row_index}', [row_data])
+                print(f"✅ User updated in Google Sheets")
             else:
-                # Add new user
+                # Add new
                 self.users_sheet.append_row(row_data)
-                print(f"✅ Added new user: {user_data.get('email')}")
+                print(f"✅ New user added to Google Sheets")
             
             return True
             
         except Exception as e:
-            print(f"❌ Error saving user to Google Sheets: {e}")
-            # Fallback to memory storage
-            self.users_storage = [u for u in self.users_storage if u.get('email') != user_data.get('email')]
-            self.users_storage.append(user_data)
-            print(f"✅ User saved to memory as fallback: {user_data.get('email')}")
-            return True
+            print(f"❌ Error saving user: {e}")
+            return False
     
     def get_user_info(self, user_email):
         """Get user information by email"""
@@ -356,28 +398,27 @@ class GoogleSheetsDB:
         try:
             if not self.users_sheet:
                 return None
-                
+            
             records = self.users_sheet.get_all_records()
-            return next((record for record in records if record.get('email') == user_email), None)
+            return next((r for r in records if r.get('email') == user_email), None)
         except Exception as e:
             print(f"❌ Error getting user: {e}")
             return None
     
     def add_order(self, order_data):
-        """Add a new order - FIXED VERSION"""
+        """Add a new order"""
         print(f"💾 Adding order: {order_data.get('order_id')}")
         
         if self.using_memory_storage:
             self.orders_storage.append(order_data)
-            print(f"✅ Order saved to memory: {order_data.get('order_id')}")
+            print(f"✅ Order saved to memory")
             return True
         
         try:
             if not self.orders_sheet:
                 print("❌ Orders sheet not connected")
                 return False
-                
-            # Prepare row data
+            
             row_data = [
                 order_data.get('order_id', ''),
                 order_data.get('user_id', ''),
@@ -398,31 +439,27 @@ class GoogleSheetsDB:
                 order_data.get('created_at', '')
             ]
             
-            # Add to Google Sheets
             self.orders_sheet.append_row(row_data)
-            print(f"✅ Order saved to Google Sheets: {order_data.get('order_id')}")
+            print(f"✅ Order saved to Google Sheets")
             return True
             
         except Exception as e:
-            print(f"❌ Error adding order to Google Sheets: {e}")
-            # Fallback to memory storage
-            self.orders_storage.append(order_data)
-            print(f"✅ Order saved to memory as fallback: {order_data.get('order_id')}")
-            return True
+            print(f"❌ Error adding order: {e}")
+            return False
     
     def get_user_orders(self, user_email):
         """Get orders by user email"""
         if self.using_memory_storage:
-            return [order for order in self.orders_storage if order.get('user_email') == user_email]
+            orders = [o for o in self.orders_storage if o.get('user_email') == user_email]
+            return sorted(orders, key=lambda x: x.get('created_at', ''), reverse=True)
         
         try:
             if not self.orders_sheet:
                 return []
-                
+            
             records = self.orders_sheet.get_all_records()
-            user_orders = [record for record in records if record.get('user_email') == user_email]
-            user_orders.sort(key=lambda x: x.get('created_at', ''), reverse=True)
-            return user_orders
+            user_orders = [r for r in records if r.get('user_email') == user_email]
+            return sorted(user_orders, key=lambda x: x.get('created_at', ''), reverse=True)
         except Exception as e:
             print(f"❌ Error getting orders: {e}")
             return []
