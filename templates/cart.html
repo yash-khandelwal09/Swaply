@@ -166,7 +166,7 @@ function loadCart() {
                 return;
             }
 
-            // Display cart items
+            // Display cart items with images
             cartContent.innerHTML = `
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <!-- Cart Items -->
@@ -175,8 +175,14 @@ function loadCart() {
                             const itemTotal = (item.price * item.quantity).toFixed(2);
                             return `
                             <div class="bg-white rounded-xl shadow-lg p-4 border border-gray-100 flex items-center space-x-4">
-                                <div class="w-16 h-20 bg-gradient-to-br from-emerald-100 to-blue-100 rounded-lg flex items-center justify-center text-emerald-600 font-bold text-xs flex-shrink-0">
-                                    BOOK
+                                <!-- Book Image -->
+                                <div class="flex-shrink-0">
+                                    ${item.image_url ? 
+                                        `<img src="${item.image_url}" alt="${item.title}" class="w-16 h-20 object-cover rounded-lg border border-gray-200">` :
+                                        `<div class="w-16 h-20 bg-gradient-to-br from-emerald-100 to-blue-100 rounded-lg flex items-center justify-center text-emerald-600 font-bold text-xs">
+                                            BOOK
+                                        </div>`
+                                    }
                                 </div>
                                 <div class="flex-1">
                                     <h3 class="font-bold text-gray-800">${item.title}</h3>

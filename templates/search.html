@@ -1,5 +1,3 @@
-
-
 {% extends "base.html" %}
 
 {% block title %}Shop Books - SWAPLY{% endblock %}
@@ -54,17 +52,32 @@
             data-title="{{ book.title }}" data-author="{{ book.author }}"
             data-book-id="{{ book.id }}">
             <div class="p-6">
-                <!-- Book Header -->
-                <div class="flex justify-between items-start mb-4">
-                    <span class="bg-emerald-100 text-emerald-800 text-sm px-3 py-1 rounded-full font-semibold">
-                        {{ book.condition or 'Good' }}
-                    </span>
-                    <span class="text-2xl font-bold text-emerald-600">₹{{ book.price }}</span>
+                <!-- Book Header with Image -->
+                <div class="flex items-start space-x-4 mb-4">
+                    <!-- Book Image -->
+                    <div class="flex-shrink-0">
+                        {% if book.image_url %}
+                        <img src="{{ book.image_url }}" alt="{{ book.title }}" 
+                             class="w-16 h-20 object-cover rounded-lg border border-gray-200">
+                        {% else %}
+                        <div class="w-16 h-20 bg-gradient-to-br from-emerald-100 to-blue-100 rounded-lg flex items-center justify-center text-emerald-600 font-bold text-xs">
+                            BOOK
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Book Info -->
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="bg-emerald-100 text-emerald-800 text-sm px-2 py-1 rounded-full font-semibold">
+                                {{ book.condition or 'Good' }}
+                            </span>
+                            <span class="text-2xl font-bold text-emerald-600">₹{{ book.price }}</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-1 truncate">{{ book.title }}</h3>
+                        <p class="text-gray-600 text-sm mb-2">by {{ book.author }}</p>
+                    </div>
                 </div>
-
-                <!-- Book Info -->
-                <h3 class="text-xl font-bold text-gray-800 mb-2">{{ book.title }}</h3>
-                <p class="text-gray-600 mb-3">by {{ book.author }}</p>
 
                 {% if book.isbn %}
                 <p class="text-gray-500 text-sm mb-3">

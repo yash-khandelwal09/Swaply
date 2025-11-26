@@ -123,12 +123,12 @@ class GoogleSheetsDB:
             return
         
         try:
-            # Books sheet headers
+            # Books sheet headers - UPDATED: Added image_url as column L
             if self.books_sheet:
                 all_values = self.books_sheet.get_all_values()
                 if not all_values or len(all_values) == 0:
                     headers = ['id', 'title', 'author', 'price', 'condition', 'isbn', 
-                              'description', 'category', 'status', 'stock_quantity', 'timestamp']
+                              'description', 'category', 'status', 'stock_quantity', 'timestamp', 'image_url']
                     self.books_sheet.append_row(headers)
                     print("✅ Books sheet headers created")
             
@@ -196,6 +196,12 @@ class GoogleSheetsDB:
                 except:
                     stock_qty = 1
                 
+                # Get image URL or use placeholder
+                image_url = book.get('image_url', '').strip()
+                if not image_url:
+                    # Use a default book placeholder
+                    image_url = ''
+
                 book_data = {
                     'id': str(book.get('id', '')).strip(),
                     'title': book.get('title', 'Unknown Book'),
@@ -207,7 +213,8 @@ class GoogleSheetsDB:
                     'category': book.get('category', ''),
                     'status': book.get('status', 'Available'),
                     'stock_quantity': stock_qty,
-                    'timestamp': book.get('timestamp', '')
+                    'timestamp': book.get('timestamp', ''),
+                    'image_url': image_url
                 }
                 
                 books.append(book_data)

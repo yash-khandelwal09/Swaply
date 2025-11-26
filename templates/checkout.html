@@ -386,8 +386,14 @@ function displaySingleBook(book) {
 
     orderSummary.innerHTML = `
         <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-            <div class="w-16 h-20 bg-gradient-to-br from-emerald-100 to-blue-100 rounded-lg flex items-center justify-center text-emerald-600 font-bold text-xs flex-shrink-0">
-                BOOK
+            <!-- Book Image -->
+            <div class="flex-shrink-0">
+                ${book.image_url ? 
+                    `<img src="${book.image_url}" alt="${book.title || 'Unknown Title'}" class="w-16 h-20 object-cover rounded-lg border border-gray-200">` :
+                    `<div class="w-16 h-20 bg-gradient-to-br from-emerald-100 to-blue-100 rounded-lg flex items-center justify-center text-emerald-600 font-bold text-xs">
+                        BOOK
+                    </div>`
+                }
             </div>
             <div class="flex-1 min-w-0">
                 <h4 class="font-semibold text-gray-800 truncate">${book.title || 'Unknown Title'}</h4>
@@ -422,8 +428,14 @@ function displayCartCheckout(cartItems, total) {
         const itemTotal = item.price * item.quantity;
         itemsHtml += `
             <div class="flex items-start space-x-3 mb-4 p-3 bg-gray-50 rounded-lg">
-                <div class="w-12 h-16 bg-gradient-to-br from-emerald-100 to-blue-100 rounded-lg flex items-center justify-center text-emerald-600 font-bold text-xs flex-shrink-0">
-                    BOOK
+                <!-- Book Image -->
+                <div class="flex-shrink-0">
+                    ${item.image_url ? 
+                        `<img src="${item.image_url}" alt="${item.title}" class="w-12 h-16 object-cover rounded-lg border border-gray-200">` :
+                        `<div class="w-12 h-16 bg-gradient-to-br from-emerald-100 to-blue-100 rounded-lg flex items-center justify-center text-emerald-600 font-bold text-xs">
+                            BOOK
+                        </div>`
+                    }
                 </div>
                 <div class="flex-1">
                     <h4 class="font-bold text-gray-800 leading-tight">${item.title}</h4>

@@ -173,6 +173,7 @@ def add_to_cart():
                 'author': book.get('author'),
                 'price': float(book.get('price', 0)),
                 'condition': book.get('condition'),
+                'image_url': book.get('image_url', ''),
                 'quantity': 1
             }
             cart.append(cart_item)
@@ -258,6 +259,24 @@ def remove_from_cart():
             
     except Exception as e:
         print(f"❌ Error removing from cart: {e}")
+        return jsonify({'success': False, 'error': 'Server error'}), 500
+
+@app.route('/api/clear-cart', methods=['POST'])
+def clear_cart():
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'error': 'Please login first'}), 401
+    
+    try:
+        session['cart'] = []
+        session.modified = True
+        
+        return jsonify({
+            'success': True, 
+            'message': 'Cart cleared successfully'
+        })
+        
+    except Exception as e:
+        print(f"❌ Error clearing cart: {e}")
         return jsonify({'success': False, 'error': 'Server error'}), 500
 
 # Order APIs
