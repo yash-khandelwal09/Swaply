@@ -19,7 +19,7 @@ instance/
 .venv
 
 # Credentials - IMPORTANT: Don't commit credentials!
-credentials.json
+# credentials.json
 *.key
 *.pem
 
