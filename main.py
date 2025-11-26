@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, jsonify, session, redirect, u
 import os
 from datetime import datetime
 import secrets
-import requests
 from utils.sheets import db
 
 app = Flask(__name__)
@@ -31,7 +30,6 @@ def index():
 def books():
     try:
         available_books = db.get_available_books()
-        print(f"📚 /books route: Showing {len(available_books)} books")
         return render_template('search.html', books=available_books)
     except Exception as e:
         print(f"❌ Error in books route: {e}")
@@ -71,10 +69,10 @@ def api_google_login():
         
         try:
             if token.startswith('ey'):
-                payload_part = token.split('.')[1]
                 import base64
                 import json
                 
+                payload_part = token.split('.')[1]
                 padding = 4 - len(payload_part) % 4
                 if padding != 4:
                     payload_part += '=' * padding
@@ -98,8 +96,6 @@ def api_google_login():
                 session['user_email'] = email
                 session['user_name'] = name
                 session['user_picture'] = payload.get('picture', '')
-                
-                print(f"✅ User logged in: {name} ({email})")
                 
                 return jsonify({
                     'success': True, 
@@ -304,7 +300,6 @@ def place_order():
         if not book:
             return jsonify({'success': False, 'error': 'Book not found'}), 404
         
-        # Check if book is available and in stock
         if book.get('status', '').lower() != 'available':
             return jsonify({'success': False, 'error': 'Book is no longer available'}), 400
         
@@ -338,7 +333,6 @@ def place_order():
         if not success:
             return jsonify({'success': False, 'error': 'Failed to save order'}), 500
         
-        # Decrease stock quantity instead of marking as Sold
         db.decrease_book_stock(book_id, quantity=1)
         
         user_data = {
@@ -358,8 +352,6 @@ def place_order():
         
         session['cart'] = []
         session.modified = True
-        
-        print(f"✅ Order placed: {order_id} - {book.get('title')} - ₹{book.get('price')}")
         
         return jsonify({
             'success': True, 
@@ -405,7 +397,6 @@ def place_order_from_cart():
                 failed_books.append(f"Book {book_id} not found")
                 continue
             
-            # Check availability and stock
             if book.get('status', '').lower() != 'available':
                 failed_books.append(f"{book.get('title')} not available")
                 continue
@@ -438,7 +429,6 @@ def place_order_from_cart():
             }
             
             if db.add_order(order_data):
-                # Decrease stock by quantity ordered
                 db.decrease_book_stock(book_id, quantity=quantity)
                 orders_placed.append({
                     'order_id': order_id,
@@ -483,8 +473,6 @@ def place_order_from_cart():
         
     except Exception as e:
         print(f"❌ Error placing cart order: {e}")
-        import traceback
-        traceback.print_exc()
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/api/get-orders')
@@ -526,14 +514,10 @@ def get_book(book_id):
         return jsonify({'error': 'Server error'}), 500
 
 if __name__ == '__main__':
-    print("\n" + "="*60)
+    print("\n" + "="*50)
     print("🚀 SWAPLY SERVER STARTING")
-    print("="*60)
+    print("="*50)
     print("📚 Home: http://localhost:5000")
-    print("🛒 Shop: http://localhost:5000/books")
-    print("💾 Database Status:")
-    print(f"   - Using: {'Google Sheets' if not db.using_memory_storage else 'Memory Storage'}")
-    print(f"   - Books loaded: {len(db.get_all_books())}")
-    print(f"   - Available books: {len(db.get_available_books())}")
-    print("="*60 + "\n")
+    print("💾 Database: Memory Storage (Sheets connecting in background)")
+    print("="*50 + "\n")
     app.run(debug=True, host='0.0.0.0', port=5000)
