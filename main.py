@@ -455,7 +455,7 @@ def place_order():
             'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
         
-        # Save order to database
+        # Save order to database - USING FIXED METHOD
         success = db.add_order(order_data)
         
         if not success:
@@ -464,7 +464,7 @@ def place_order():
         # Update book status to Sold
         db.update_book_status(book_id, 'Sold')
         
-        # Save user address for future orders
+        # Save user address for future orders - USING FIXED METHOD
         user_data = {
             'user_id': session['user_id'],
             'email': session['user_email'],
@@ -576,7 +576,7 @@ def place_order_from_cart():
             
             print(f"💾 Saving order: {order_data}")
             
-            # Save order to database
+            # Save order to database - USING FIXED METHOD
             success = db.add_order(order_data)
             
             if success:
@@ -593,7 +593,7 @@ def place_order_from_cart():
                 failed_books.append(f"Failed to order {book.get('title')}")
                 print(f"❌ Failed to save order for: {book.get('title')}")
         
-        # Save user address for future orders
+        # Save user address for future orders - USING FIXED METHOD
         user_data = {
             'user_id': session['user_id'],
             'email': session['user_email'],
@@ -638,116 +638,6 @@ def place_order_from_cart():
         import traceback
         traceback.print_exc()
         return jsonify({'success': False, 'error': 'Server error: ' + str(e)}), 500
-
-def save_user_info(self, user_data):
-    """Save or update user information - FIXED VERSION"""
-    print(f"💾 Saving user info for: {user_data.get('email')}")
-    
-    if self.using_memory_storage:
-        # Remove existing user and add new one
-        self.users_storage = [u for u in self.users_storage if u.get('email') != user_data.get('email')]
-        self.users_storage.append(user_data)
-        print(f"✅ User saved to memory: {user_data.get('email')}")
-        return True
-    
-    try:
-        if not self.users_sheet:
-            print("❌ Users sheet not connected")
-            return False
-            
-        # Get all records to find existing user
-        all_values = self.users_sheet.get_all_values()
-        user_exists = False
-        row_index = None
-        
-        # Skip header row, start from row 2
-        for i, row in enumerate(all_values[1:], start=2):
-            if len(row) > 1 and row[1] == user_data.get('email'):  # email is column B
-                user_exists = True
-                row_index = i
-                break
-        
-        # Prepare row data
-        row_data = [
-            user_data.get('user_id', ''),
-            user_data.get('email', ''),
-            user_data.get('name', ''),
-            user_data.get('phone', ''),
-            user_data.get('address_line1', ''),
-            user_data.get('address_line2', ''),
-            user_data.get('city', ''),
-            user_data.get('state', ''),
-            user_data.get('zip_code', ''),
-            user_data.get('created_at', ''),
-            user_data.get('updated_at', '')
-        ]
-        
-        if user_exists and row_index:
-            # Update existing user
-            range_str = f'A{row_index}:K{row_index}'
-            self.users_sheet.update(range_str, [row_data])
-            print(f"✅ Updated existing user: {user_data.get('email')} at row {row_index}")
-        else:
-            # Add new user
-            self.users_sheet.append_row(row_data)
-            print(f"✅ Added new user: {user_data.get('email')}")
-        
-        return True
-        
-    except Exception as e:
-        print(f"❌ Error saving user to Google Sheets: {e}")
-        # Fallback to memory storage
-        self.users_storage = [u for u in self.users_storage if u.get('email') != user_data.get('email')]
-        self.users_storage.append(user_data)
-        print(f"✅ User saved to memory as fallback: {user_data.get('email')}")
-        return True
-
-def add_order(self, order_data):
-    """Add a new order - FIXED VERSION"""
-    print(f"💾 Adding order: {order_data.get('order_id')}")
-    
-    if self.using_memory_storage:
-        self.orders_storage.append(order_data)
-        print(f"✅ Order saved to memory: {order_data.get('order_id')}")
-        return True
-    
-    try:
-        if not self.orders_sheet:
-            print("❌ Orders sheet not connected")
-            return False
-            
-        # Prepare row data
-        row_data = [
-            order_data.get('order_id', ''),
-            order_data.get('user_id', ''),
-            order_data.get('user_email', ''),
-            order_data.get('book_id', ''),
-            order_data.get('book_title', ''),
-            order_data.get('quantity', ''),
-            order_data.get('total_price', ''),
-            order_data.get('full_name', ''),
-            order_data.get('phone', ''),
-            order_data.get('address_line1', ''),
-            order_data.get('address_line2', ''),
-            order_data.get('city', ''),
-            order_data.get('state', ''),
-            order_data.get('zip_code', ''),
-            order_data.get('payment_method', ''),
-            order_data.get('status', ''),
-            order_data.get('created_at', '')
-        ]
-        
-        # Add to Google Sheets
-        self.orders_sheet.append_row(row_data)
-        print(f"✅ Order saved to Google Sheets: {order_data.get('order_id')}")
-        return True
-        
-    except Exception as e:
-        print(f"❌ Error adding order to Google Sheets: {e}")
-        # Fallback to memory storage
-        self.orders_storage.append(order_data)
-        print(f"✅ Order saved to memory as fallback: {order_data.get('order_id')}")
-        return True
 
 @app.route('/api/get-orders')
 def get_orders():
@@ -829,7 +719,6 @@ def force_price_fix():
     
     return jsonify(forced_book)
 
-
 @app.route('/debug-users')
 def debug_users():
     """Debug route to check user data"""
@@ -886,7 +775,6 @@ def debug_orders():
         return jsonify({'error': str(e)})
     
     return jsonify({'error': 'Orders sheet not connected'})
-    
 
 @app.route('/debug-cart')
 def debug_cart():
@@ -932,6 +820,8 @@ def debug_all_data():
 @app.route('/debug-sheets-connection')
 def debug_sheets_connection():
     """Debug Google Sheets connection issues"""
+    import json
+    
     debug_info = {
         'credentials_file_exists': os.path.exists('credentials.json'),
         'sheets_attempted_connection': db.connection_attempted,
@@ -1050,7 +940,6 @@ def debug_price_parsing():
         'using_memory_storage': db.using_memory_storage,
         'price_debug': price_debug
     })
-
 
 if __name__ == '__main__':
     print("🚀 Starting SWAPLY Server...")

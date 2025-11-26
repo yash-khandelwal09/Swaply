@@ -12,52 +12,26 @@ class GoogleSheetsDB:
         self.books_sheet = None
         self.users_sheet = None
         self.orders_sheet = None
-        self.using_memory_storage = True  # Start with memory storage
+        self.using_memory_storage = True
         self.connection_attempted = False
         
-        # Initialize memory storage immediately
+        # Initialize EMPTY memory storage
         self._init_memory_storage()
         
-        # Try to connect to Google Sheets in background
+        # Try to connect to Google Sheets
         self.connect_async()
     
     def _init_memory_storage(self):
-        """Initialize memory storage with sample data"""
+        """Initialize EMPTY memory storage"""
         print("🔄 Initializing memory storage...")
         
-        # Sample books data with Indian price ranges
-        self.books_storage = [
-            {
-                'id': '1', 'title': 'Mathematics Textbook', 'author': 'John Smith', 'price': 85.00, 
-                'condition': 'Good', 'isbn': '47923578', 'description': 'Great condition with minimal highlighting',
-                'category': 'Academic', 'timestamp': '2024-01-15', 'status': 'Available'
-            },
-            {
-                'id': '2', 'title': 'Physics Guide', 'author': 'Sarah Johnson', 'price': 120.00, 
-                'condition': 'Like New', 'isbn': '987654321', 'description': 'Almost new, no markings',
-                'category': 'Academic', 'timestamp': '2024-01-14', 'status': 'Available'
-            },
-            {
-                'id': '3', 'title': 'Chemistry Fundamentals', 'author': 'Dr. Robert Brown', 'price': 95.50, 
-                'condition': 'Excellent', 'isbn': '555123456', 'description': 'Latest edition, barely used',
-                'category': 'Academic', 'timestamp': '2024-01-16', 'status': 'Available'
-            },
-            {
-                'id': '4', 'title': 'Fiction Novel Collection', 'author': 'Various Authors', 'price': 150.00, 
-                'condition': 'Good', 'isbn': '789012345', 'description': 'Collection of popular fiction novels',
-                'category': 'Fiction', 'timestamp': '2024-01-17', 'status': 'Available'
-            },
-            {
-                'id': '5', 'title': 'Business Strategy', 'author': 'Michael Kumar', 'price': 280.00, 
-                'condition': 'Like New', 'isbn': '345678901', 'description': 'Business strategy guide for entrepreneurs',
-                'category': 'Business', 'timestamp': '2024-01-18', 'status': 'Available'
-            }
-        ]
+        # EMPTY books data - no sample books
+        self.books_storage = []
         
         self.users_storage = []
         self.orders_storage = []
         
-        print("✅ Memory storage initialized")
+        print("✅ Memory storage initialized (EMPTY)")
 
     def connect_async(self):
         """Try to connect to Google Sheets in background"""
@@ -181,8 +155,8 @@ class GoogleSheetsDB:
             all_values = self.books_sheet.get_all_values()
             
             if len(all_values) <= 1:  # Only headers or empty
-                print("❌ No books found in sheet - using memory storage")
-                return self.books_storage
+                print("❌ No books found in sheet - returning EMPTY list")
+                return []  # Return EMPTY list instead of memory storage
             
             headers = all_values[0]
             books = []
@@ -226,7 +200,7 @@ class GoogleSheetsDB:
             
         except Exception as e:
             print(f"❌ Error loading books from Google Sheets: {e}")
-            return self.books_storage
+            return self.books_storage  # Return memory storage (which is now empty)
 
     def _parse_price_aggressive(self, book_id, raw_price, row_index):
         """Aggressive price parsing with multiple fallback methods"""
@@ -265,22 +239,9 @@ class GoogleSheetsDB:
         except:
             pass
         
-        # Method 4: Hardcoded prices based on book ID (Indian price ranges)
-        book_id_str = str(book_id).strip()
-        if book_id_str == '1':
-            price = 85.00
-        elif book_id_str == '2':
-            price = 120.00
-        elif book_id_str == '3':
-            price = 95.50
-        elif book_id_str == '4':
-            price = 150.00
-        elif book_id_str == '5':
-            price = 280.00
-        else:
-            price = 100.00  # Default price in Indian range
-        
-        print(f"✅ Method 4 - Hardcoded price: {price}")
+        # Method 4: Default price if all parsing fails
+        price = 100.00  # Default price in Indian range
+        print(f"✅ Method 4 - Default price: {price}")
         return price
     
     def get_available_books(self):
@@ -325,48 +286,67 @@ class GoogleSheetsDB:
             return False
     
     def save_user_info(self, user_data):
-        """Save or update user information"""
-        print(f"💾 Saving user: {user_data.get('email')}")
+        """Save or update user information - FIXED VERSION"""
+        print(f"💾 Saving user info for: {user_data.get('email')}")
         
         if self.using_memory_storage:
+            # Remove existing user and add new one
             self.users_storage = [u for u in self.users_storage if u.get('email') != user_data.get('email')]
             self.users_storage.append(user_data)
+            print(f"✅ User saved to memory: {user_data.get('email')}")
             return True
         
         try:
             if not self.users_sheet:
+                print("❌ Users sheet not connected")
                 return False
                 
-            records = self.users_sheet.get_all_records()
+            # Get all records to find existing user
+            all_values = self.users_sheet.get_all_values()
             user_exists = False
+            row_index = None
             
-            for i, record in enumerate(records, start=2):
-                if record.get('email') == user_data.get('email'):
-                    # Update existing user
-                    row_data = [
-                        user_data.get('user_id'), user_data.get('email'), user_data.get('name'),
-                        user_data.get('phone'), user_data.get('address_line1'), user_data.get('address_line2'),
-                        user_data.get('city'), user_data.get('state'), user_data.get('zip_code'),
-                        record.get('created_at'), user_data.get('updated_at')
-                    ]
-                    self.users_sheet.update(f'A{i}:K{i}', [row_data])
+            # Skip header row, start from row 2
+            for i, row in enumerate(all_values[1:], start=2):
+                if len(row) > 1 and row[1] == user_data.get('email'):  # email is column B
                     user_exists = True
+                    row_index = i
                     break
             
-            if not user_exists:
+            # Prepare row data
+            row_data = [
+                user_data.get('user_id', ''),
+                user_data.get('email', ''),
+                user_data.get('name', ''),
+                user_data.get('phone', ''),
+                user_data.get('address_line1', ''),
+                user_data.get('address_line2', ''),
+                user_data.get('city', ''),
+                user_data.get('state', ''),
+                user_data.get('zip_code', ''),
+                user_data.get('created_at', ''),
+                user_data.get('updated_at', '')
+            ]
+            
+            if user_exists and row_index:
+                # Update existing user
+                range_str = f'A{row_index}:K{row_index}'
+                self.users_sheet.update(range_str, [row_data])
+                print(f"✅ Updated existing user: {user_data.get('email')} at row {row_index}")
+            else:
                 # Add new user
-                row_data = [
-                    user_data.get('user_id'), user_data.get('email'), user_data.get('name'),
-                    user_data.get('phone'), user_data.get('address_line1'), user_data.get('address_line2'),
-                    user_data.get('city'), user_data.get('state'), user_data.get('zip_code'),
-                    user_data.get('created_at'), user_data.get('updated_at')
-                ]
                 self.users_sheet.append_row(row_data)
+                print(f"✅ Added new user: {user_data.get('email')}")
             
             return True
+            
         except Exception as e:
-            print(f"❌ Error saving user: {e}")
-            return False
+            print(f"❌ Error saving user to Google Sheets: {e}")
+            # Fallback to memory storage
+            self.users_storage = [u for u in self.users_storage if u.get('email') != user_data.get('email')]
+            self.users_storage.append(user_data)
+            print(f"✅ User saved to memory as fallback: {user_data.get('email')}")
+            return True
     
     def get_user_info(self, user_email):
         """Get user information by email"""
@@ -384,30 +364,51 @@ class GoogleSheetsDB:
             return None
     
     def add_order(self, order_data):
-        """Add a new order"""
+        """Add a new order - FIXED VERSION"""
         print(f"💾 Adding order: {order_data.get('order_id')}")
         
         if self.using_memory_storage:
             self.orders_storage.append(order_data)
+            print(f"✅ Order saved to memory: {order_data.get('order_id')}")
             return True
         
         try:
             if not self.orders_sheet:
+                print("❌ Orders sheet not connected")
                 return False
                 
+            # Prepare row data
             row_data = [
-                order_data.get('order_id'), order_data.get('user_id'), order_data.get('user_email'),
-                order_data.get('book_id'), order_data.get('book_title'), order_data.get('quantity'),
-                order_data.get('total_price'), order_data.get('full_name'), order_data.get('phone'),
-                order_data.get('address_line1'), order_data.get('address_line2'), order_data.get('city'),
-                order_data.get('state'), order_data.get('zip_code'), order_data.get('payment_method'),
-                order_data.get('status'), order_data.get('created_at')
+                order_data.get('order_id', ''),
+                order_data.get('user_id', ''),
+                order_data.get('user_email', ''),
+                order_data.get('book_id', ''),
+                order_data.get('book_title', ''),
+                order_data.get('quantity', ''),
+                order_data.get('total_price', ''),
+                order_data.get('full_name', ''),
+                order_data.get('phone', ''),
+                order_data.get('address_line1', ''),
+                order_data.get('address_line2', ''),
+                order_data.get('city', ''),
+                order_data.get('state', ''),
+                order_data.get('zip_code', ''),
+                order_data.get('payment_method', ''),
+                order_data.get('status', ''),
+                order_data.get('created_at', '')
             ]
+            
+            # Add to Google Sheets
             self.orders_sheet.append_row(row_data)
+            print(f"✅ Order saved to Google Sheets: {order_data.get('order_id')}")
             return True
+            
         except Exception as e:
-            print(f"❌ Error adding order: {e}")
-            return False
+            print(f"❌ Error adding order to Google Sheets: {e}")
+            # Fallback to memory storage
+            self.orders_storage.append(order_data)
+            print(f"✅ Order saved to memory as fallback: {order_data.get('order_id')}")
+            return True
     
     def get_user_orders(self, user_email):
         """Get orders by user email"""
