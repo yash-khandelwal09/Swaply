@@ -9,37 +9,50 @@
     <link rel="stylesheet" href="/static/css/output.css">
     <!-- Custom Utilities -->
     <link rel="stylesheet" href="/static/css/utility.css">
+    <!-- Theme Variables -->
+    <link rel="stylesheet" href="/static/css/variable.css">
 </head>
 
-<body class="from-gray-50 to-blue-50 min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col theme-emerald">
+    <!-- Theme Toggle Button -->
+    <div class="fixed top-20 right-4 z-50">
+        <button id="themeToggle" class="bg-theme-bg-light text-theme-text p-3 rounded-full shadow-lg border border-theme-light hover:scale-110 transition-transform duration-300">
+            <span class="theme-icon text-lg">💎</span>
+        </button>
+    </div>
+
     <!-- Navigation -->
-    <nav class="bg-white shadow-lg sticky top-0 z-50 border-b-4 border-emerald-500">
+    <nav class="bg-white shadow-lg sticky top-0 z-40 border-b-4 border-theme-primary">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center py-4">
                 <!-- Logo -->
-                <div class="flex items-center space-x-3">
-                    <a href="/"><img src="/static/assets/Untitled design.png" alt="" class="md:w-14 md:h-14 w-10 h-10 rounded-full"></a>
-                    <span class="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-700 bg-clip-text text-transparent">SWAPLY</span>
-                </div>
+                <!-- Logo -->
+<!-- Logo - Solid Color Solution -->
+<div class="flex items-center space-x-3">
+    <a href="/"><img src="/static/assets/Untitled design.png" alt="" class="md:w-14 md:h-14 w-10 h-10 rounded-full"></a>
+    <span class="text-2xl font-bold text-theme-primary">
+        SWAPLY
+    </span>
+</div>
 
                 <!-- Desktop Navigation Links -->
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="{{ url_for('index') }}"
-                        class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 border-b-2 border-transparent hover:border-emerald-500">Home</a>
+                        class="text-gray-700 hover:text-theme-primary font-medium transition duration-300 py-2 border-b-2 border-transparent hover:border-theme-primary">Home</a>
                     <a href="{{ url_for('books') }}"
-                        class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 border-b-2 border-transparent hover:border-emerald-500">Shop Books</a>
+                        class="text-gray-700 hover:text-theme-primary font-medium transition duration-300 py-2 border-b-2 border-transparent hover:border-theme-primary">Shop Books</a>
                     {% if session.user_id %}
                     <a href="{{ url_for('manage') }}"
-                        class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 border-b-2 border-transparent hover:border-emerald-500">My Account</a>
-                    <a href="/cart" class="text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 border-b-2 border-transparent hover:border-emerald-500 relative">
+                        class="text-gray-700 hover:text-theme-primary font-medium transition duration-300 py-2 border-b-2 border-transparent hover:border-theme-primary">My Account</a>
+                    <a href="/cart" class="text-gray-700 hover:text-theme-primary font-medium transition duration-300 py-2 border-b-2 border-transparent hover:border-theme-primary relative">
                         🛒 Cart
-                        <span id="cartCount" class="absolute -top-2 -right-4 bg-emerald-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+                        <span id="cartCount" class="absolute -top-2 -right-4 bg-theme-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
                     </a>
                     <button onclick="logout()"
                         class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300 font-medium">Logout</button>
                     {% else %}
                     <a href="{{ url_for('login') }}"
-                        class="bg-emerald-500 text-white px-6 py-2 rounded-lg hover:bg-emerald-600 transition duration-300 font-medium">Login</a>
+                        class="bg-theme-primary text-white px-6 py-2 rounded-lg hover:bg-theme-secondary transition duration-300 font-medium">Login</a>
                     {% endif %}
                 </div>
 
@@ -48,10 +61,10 @@
                     {% if session.user_id %}
                     <a href="/cart" class="text-gray-700 mr-4 relative">
                         🛒
-                        <span id="mobileCartCount" class="absolute -top-2 -right-2 bg-emerald-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+                        <span id="mobileCartCount" class="absolute -top-2 -right-2 bg-theme-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
                     </a>
                     {% endif %}
-                    <button id="mobile-menu-button" class="text-gray-700 hover:text-emerald-600 transition duration-300">
+                    <button id="mobile-menu-button" class="text-gray-700 hover:text-theme-primary transition duration-300">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
@@ -64,93 +77,108 @@
         <div id="mobile-menu" class="md:hidden hidden bg-white border-t border-gray-200 shadow-lg">
             <div class="px-4 py-4 space-y-3">
                 <a href="{{ url_for('index') }}"
-                    class="block text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 px-4 rounded-lg hover:bg-emerald-50">Home</a>
+                    class="block text-gray-700 hover:text-theme-primary font-medium transition duration-300 py-2 px-4 rounded-lg hover:bg-theme-bg-light">Home</a>
                 <a href="{{ url_for('books') }}"
-                    class="block text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 px-4 rounded-lg hover:bg-emerald-50">Shop Books</a>
+                    class="block text-gray-700 hover:text-theme-primary font-medium transition duration-300 py-2 px-4 rounded-lg hover:bg-theme-bg-light">Shop Books</a>
                 {% if session.user_id %}
                 <a href="{{ url_for('manage') }}"
-                    class="block text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 px-4 rounded-lg hover:bg-emerald-50">My Account</a>
+                    class="block text-gray-700 hover:text-theme-primary font-medium transition duration-300 py-2 px-4 rounded-lg hover:bg-theme-bg-light">My Account</a>
                 <a href="/cart"
-                    class="block text-gray-700 hover:text-emerald-600 font-medium transition duration-300 py-2 px-4 rounded-lg hover:bg-emerald-50">🛒 Cart</a>
+                    class="block text-gray-700 hover:text-theme-primary font-medium transition duration-300 py-2 px-4 rounded-lg hover:bg-theme-bg-light">🛒 Cart</a>
                 <button onclick="logout()"
                     class="w-full text-left bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300 font-medium mt-2">Logout</button>
                 {% else %}
                 <a href="{{ url_for('login') }}"
-                    class="block bg-emerald-500 text-white text-center px-4 py-2 rounded-lg hover:bg-emerald-600 transition duration-300 font-medium">Login</a>
+                    class="block bg-theme-primary text-white text-center px-4 py-2 rounded-lg hover:bg-theme-secondary transition duration-300 font-medium">Login</a>
                 {% endif %}
             </div>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="flex-grow">
+    <main class="flex-grow bg-theme-bg-light">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white mt-16 border-t-4 border-emerald-500">
-        <div class="max-w-7xl mx-auto px-4 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <!-- Brand -->
-                <div class="col-span-1 md:col-span-2">
-                    <div class="flex items-center space-x-3 mb-4">
-                        <div class="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center text-white font-bold">
-                            S
-                        </div>
-                        <span class="text-xl font-bold text-white">SWAPLY</span>
+<!-- Footer -->
+<footer class="text-white mt-16 border-t-4 border-theme-primary bg-black">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- Brand -->
+            <div class="col-span-1 md:col-span-2">
+                <div class="flex items-center space-x-3 mb-4">
+                    <div class="w-8 h-8 bg-theme-primary rounded-lg flex items-center justify-center text-white font-bold">
+                        S
                     </div>
-                    <p class="text-gray-300 mb-4 max-w-md">
-                        Delhi's smartest platform for buying & selling books. Connect with readers across Delhi and build your book collection affordably.
-                    </p>
-                    <div class="flex space-x-4">
-                        <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-emerald-500 transition duration-300 cursor-pointer">
-                            <span class="text-white font-semibold">f</span>
-                        </div>
-                        <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-emerald-500 transition duration-300 cursor-pointer">
-                            <span class="text-white font-semibold">t</span>
-                        </div>
-                        <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-emerald-500 transition duration-300 cursor-pointer">
-                            <span class="text-white font-semibold">in</span>
-                        </div>
+                    <span class="text-xl font-bold text-white">SWAPLY</span>
+                </div>
+                <p class="text-gray-300 mb-4 max-w-md">
+                    Delhi's smartest platform for buying & selling books. Connect with readers across Delhi and build your book collection affordably.
+                </p>
+                <div class="flex space-x-4">
+                    <div class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-theme-primary transition duration-300 cursor-pointer">
+                        <span class="text-white font-semibold">f</span>
                     </div>
-                </div>
-
-                <!-- Quick Links -->
-                <div>
-                    <h3 class="text-lg font-semibold mb-4 text-white">Quick Links</h3>
-                    <ul class="space-y-2">
-                        <li><a href="{{ url_for('index') }}"
-                                class="text-gray-300 hover:text-emerald-400 transition duration-300">Home</a></li>
-                        <li><a href="{{ url_for('books') }}"
-                                class="text-gray-300 hover:text-emerald-400 transition duration-300">Shop Books</a>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Contact -->
-                <div>
-                    <h3 class="text-lg font-semibold mb-4 text-white">Need Help?</h3>
-                    <p class="text-gray-300 mb-2">📧 swaply.swap@gmail.com</p>
-                    <p class="text-gray-300">📍 Delhi, India</p>
-                    <p class="text-gray-300 mt-2">📚 Buy Smart, Sell Smart</p>
+                    <div class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-theme-primary transition duration-300 cursor-pointer">
+                        <span class="text-white font-semibold">t</span>
+                    </div>
+                    <div class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-theme-primary transition duration-300 cursor-pointer">
+                        <span class="text-white font-semibold">in</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
-                <p>&copy; 2025 SWAPLY. All rights reserved.</p>
-                <p class="mt-2 text-sm">Concept by: Yashika, Sakshi, Divya, Rubhi, Khushi</p>
-                <p class="text-sm">Design & Development by: Yash Khandelwal</p>
-                <p class="text-sm">GitHub: <a href="https://github.com/dot-codr" class="text-emerald-400 hover:text-emerald-300">https://github.com/dot-codr</a></p>
+            <!-- Quick Links -->
+            <div>
+                <h3 class="text-lg font-semibold mb-4 text-white">Quick Links</h3>
+                <ul class="space-y-2">
+                    <li><a href="{{ url_for('index') }}"
+                            class="text-gray-300 hover:text-white transition duration-300">Home</a></li>
+                    <li><a href="{{ url_for('books') }}"
+                            class="text-gray-300 hover:text-white transition duration-300">Shop Books</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Contact -->
+            <div>
+                <h3 class="text-lg font-semibold mb-4 text-white">Need Help?</h3>
+                <p class="text-gray-300 mb-2">📧 swaply.swap@gmail.com</p>
+                <p class="text-gray-300">📍 Delhi, India</p>
+                <p class="text-gray-300 mt-2">📚 Buy Smart, Sell Smart</p>
             </div>
         </div>
-    </footer>
+
+        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
+            <p>&copy; 2025 SWAPLY. All rights reserved.</p>
+            <p class="mt-2 text-sm">Concept by: Yashika, Sakshi, Divya, Rubhi, Khushi</p>
+            <p class="text-sm">Design & Development by: Yash Khandelwal</p>
+            <p class="text-sm">GitHub: <a href="https://github.com/dot-codr" class="text-theme-light hover:text-theme-primary transition duration-300">https://github.com/dot-codr</a></p>
+        </div>
+    </div>
+</footer>
 
     <!-- JavaScript -->
     <script>
-        // Mobile menu functionality
+        // Theme functionality
         document.addEventListener('DOMContentLoaded', function() {
             console.log("🚀 SWAPLY JavaScript loaded");
             
+            // Initialize theme from localStorage or default to emerald
+            const savedTheme = localStorage.getItem('swaply-theme') || 'emerald';
+            setTheme(savedTheme);
+            
+            // Theme toggle functionality
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    const currentTheme = document.body.classList.contains('theme-gold') ? 'gold' : 'emerald';
+                    const newTheme = currentTheme === 'gold' ? 'emerald' : 'gold';
+                    setTheme(newTheme);
+                });
+            }
+
+            // Mobile menu functionality
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
 
@@ -192,6 +220,38 @@
             updateCartCount();
         });
 
+        // Theme management functions
+        function setTheme(theme) {
+            console.log(`🎨 Setting theme: ${theme}`);
+            
+            // Remove existing theme classes
+            document.body.classList.remove('theme-gold', 'theme-emerald');
+            
+            // Add new theme class
+            document.body.classList.add(`theme-${theme}`);
+            
+            // Update theme toggle button
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = themeToggle.querySelector('.theme-icon');
+            
+            if (theme === 'gold') {
+                themeIcon.textContent = '👑';
+                themeToggle.title = 'Switch to Emerald Theme';
+            } else {
+                themeIcon.textContent = '💎';
+                themeToggle.title = 'Switch to Golden Theme';
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('swaply-theme', theme);
+            
+            console.log(`🎨 Theme set to: ${theme}`);
+        }
+
+        function getCurrentTheme() {
+            return document.body.classList.contains('theme-gold') ? 'gold' : 'emerald';
+        }
+
         // Toast notification function
         function showToast(message, type = 'success') {
             console.log(`🍞 Toast: ${message} (${type})`);
@@ -204,7 +264,7 @@
             const toast = document.createElement('div');
             toast.id = toastId;
             toast.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg text-white font-semibold z-50 transform transition-all duration-300 ${
-                type === 'success' ? 'bg-emerald-500' : 'bg-red-500'
+                type === 'success' ? 'bg-theme-primary' : 'bg-red-500'
             }`;
             toast.textContent = message;
             
@@ -330,6 +390,8 @@
         window.addToCart = addToCart;
         window.showToast = showToast;
         window.logout = logout;
+        window.setTheme = setTheme;
+        window.getCurrentTheme = getCurrentTheme;
 
         console.log("✅ All JavaScript functions loaded and ready!");
     </script>

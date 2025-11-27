@@ -1,0 +1,63 @@
+:root {
+  /* Base Theme Structure */
+  --theme-primary: #eab308;
+  --theme-secondary: #ca8a04;
+  --theme-dark: #854d0e;
+  --theme-light: #fef08a;
+  --theme-bg-light: #fefce8;
+  --theme-bg: #fef9c3;
+  --theme-gradient: linear-gradient(135deg, var(--theme-light), var(--theme-primary), var(--theme-secondary), var(--theme-dark));
+  --theme-gradient-light: linear-gradient(135deg, var(--theme-light), var(--theme-primary));
+  --theme-text: var(--theme-dark);
+  --theme-text-light: #b45309;
+  --theme-footer-bg: #1a1a1a;
+  --theme-footer-text: #f8fafc;
+  /* NEW: Section gradient variables */
+  --theme-section-gradient: linear-gradient(135deg, var(--theme-bg-light), var(--theme-bg));
+  --theme-section-alt-gradient: linear-gradient(135deg, var(--theme-bg), var(--theme-bg-light));
+}
+
+/* Golden Theme - Premium & Refined */
+.theme-gold {
+  --theme-primary: #d4af37;    /* Rich metallic gold */
+  --theme-secondary: #b8941f;  /* Deep gold */
+  --theme-dark: #8b6914;       /* Dark brown-gold */
+  --theme-light: #f9e076;      /* Soft gold */
+  --theme-bg-light: #fefce8;   /* Warm white */
+  --theme-bg: #fef9c3;         /* Pale gold */
+  --theme-text: #422006;       /* Deep brown for contrast */
+  --theme-text-light: #854d0e; /* Medium brown */
+  --theme-footer-bg: #1a1a1a;  /* Black footer for golden theme */
+  --theme-footer-text: #fefce8; /* Gold-tinted white */
+  /* NEW: Golden theme section gradients */
+  --theme-section-gradient: linear-gradient(135deg, #fefce8, #fef9c3);
+  --theme-section-alt-gradient: linear-gradient(135deg, #fef9c3, #fefce8);
+  /* UPDATED: Golden theme main gradient with lighter left side */
+  --theme-gradient: linear-gradient(135deg, #f9e076, #d4af37, #b8941f, #8b6914);
+}
+
+/* Emerald Theme - Sophisticated & Clean */
+.theme-emerald {
+  --theme-primary: #10b981;    /* Vibrant emerald */
+  --theme-secondary: #059669;  /* Deep emerald */
+  --theme-dark: #047857;       /* Dark emerald */
+  --theme-light: #a7f3d0;      /* Light emerald */
+  --theme-bg-light: #ecfdf5;   /* Emerald tinted white */
+  --theme-bg: #d1fae5;         /* Pale emerald */
+  --theme-text: #064e3b;       /* Deep green for contrast */
+  --theme-text-light: #047857; /* Medium emerald */
+  --theme-footer-bg: #047857;  /* Emerald dark footer */
+  --theme-footer-text: #ecfdf5; /* Emerald tinted white */
+  /* NEW: Emerald theme section gradients */
+  --theme-section-gradient: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  --theme-section-alt-gradient: linear-gradient(135deg, #d1fae5, #ecfdf5);
+  /* UPDATED: Emerald theme main gradient with lighter left side */
+  --theme-gradient: linear-gradient(135deg, #a7f3d0, #10b981, #059669, #047857);
+}
+
+/* Utility classes for consistent theming */
+.theme-gold,
+.theme-emerald {
+  /* Gradient definitions use the theme variables */
+  --theme-gradient-light: linear-gradient(135deg, var(--theme-light), var(--theme-primary));
+}

@@ -20,37 +20,37 @@
 
     <!-- User Info -->
     <div id="userInfo" class="hidden">
-        <h1 class="text-4xl font-bold text-gray-800 mb-2">My Account</h1>
-        <p class="text-gray-600 mb-8">Manage your orders and book transactions</p>
+        <h1 class="text-4xl font-bold text-theme-text mb-2">My Account</h1>
+        <p class="text-theme-text-light mb-8">Manage your orders and book transactions</p>
 
-        <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-6">
+        <div class="bg-theme-bg border border-theme-light rounded-xl p-4 mb-6">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white font-semibold"
+                <div class="w-10 h-10 bg-theme-primary rounded-full flex items-center justify-center text-white font-semibold"
                     id="userInitial">
                     U
                 </div>
                 <div>
-                    <p class="font-semibold text-emerald-800" id="userName">Loading...</p>
-                    <p class="text-sm text-emerald-600" id="userEmail">Loading...</p>
+                    <p class="font-semibold text-theme-text" id="userName">Loading...</p>
+                    <p class="text-sm text-theme-primary" id="userEmail">Loading...</p>
                 </div>
             </div>
         </div>
 
         <!-- Account Tabs -->
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-8">
+        <div class="bg-white rounded-2xl shadow-lg border border-theme-light overflow-hidden mb-8">
             <!-- Tab Headers -->
-            <div class="border-b border-gray-200">
+            <div class="border-b border-theme-light">
                 <nav class="flex -mb-px">
                     <button id="ordersTab"
-                        class="tab-button active py-4 px-6 text-center border-b-2 border-emerald-500 text-emerald-600 font-semibold flex-1">
+                        class="tab-button active py-4 px-6 text-center border-b-2 border-theme-primary text-theme-primary font-semibold flex-1">
                         📦 My Orders
                     </button>
                     <button id="addressesTab"
-                        class="tab-button py-4 px-6 text-center border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-semibold flex-1">
+                        class="tab-button py-4 px-6 text-center border-b-2 border-transparent text-theme-text-light hover:text-theme-text font-semibold flex-1">
                         📍 Delivery Address
                     </button>
                     <button id="profileTab"
-                        class="tab-button py-4 px-6 text-center border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-semibold flex-1">
+                        class="tab-button py-4 px-6 text-center border-b-2 border-transparent text-theme-text-light hover:text-theme-text font-semibold flex-1">
                         👤 Profile
                     </button>
                 </nav>
@@ -60,21 +60,21 @@
             <div class="p-6">
                 <!-- Orders Tab Content -->
                 <div id="ordersContent" class="tab-content active">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Order History</h3>
+                    <h3 class="text-2xl font-bold text-theme-text mb-6">Order History</h3>
                     <div id="ordersList" class="space-y-4">
                         <div class="text-center py-8">
                             <div class="spinner"></div>
-                            <p class="text-gray-500 mt-4">Loading your orders...</p>
+                            <p class="text-theme-text-light mt-4">Loading your orders...</p>
                         </div>
                     </div>
 
                     <!-- No Orders Message -->
                     <div id="noOrdersMessage" class="hidden text-center py-12">
                         <div class="text-6xl mb-4">📦</div>
-                        <p class="text-gray-500 text-xl mb-4">You haven't placed any orders yet.</p>
-                        <p class="text-gray-500 mb-6">Start shopping to see your order history here!</p>
+                        <p class="text-theme-text-light text-xl mb-4">You haven't placed any orders yet.</p>
+                        <p class="text-theme-text-light mb-6">Start shopping to see your order history here!</p>
                         <a href="/books"
-                            class="inline-block bg-emerald-500 text-white px-8 py-4 rounded-xl hover:bg-emerald-600 transition duration-300 font-semibold text-lg">
+                            class="inline-block bg-theme-primary text-white px-8 py-4 rounded-xl hover:bg-theme-secondary transition duration-300 font-semibold text-lg shadow-md hover:shadow-lg">
                             🛒 Shop Books
                         </a>
                     </div>
@@ -82,48 +82,48 @@
 
                 <!-- Addresses Tab Content -->
                 <div id="addressesContent" class="tab-content hidden">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Delivery Address</h3>
+                    <h3 class="text-2xl font-bold text-theme-text mb-6">Delivery Address</h3>
                     <div id="addressesList" class="space-y-4">
                         <div class="text-center py-8">
                             <div class="spinner"></div>
-                            <p class="text-gray-500 mt-4">Loading your addresses...</p>
+                            <p class="text-theme-text-light mt-4">Loading your addresses...</p>
                         </div>
                     </div>
 
                     <!-- No Addresses Message -->
                     <div id="noAddressesMessage" class="hidden text-center py-12">
                         <div class="text-6xl mb-4">📍</div>
-                        <p class="text-gray-500 text-xl mb-4">No saved addresses yet.</p>
-                        <p class="text-gray-500 mb-6">Your delivery address will appear here after your first order.</p>
+                        <p class="text-theme-text-light text-xl mb-4">No saved addresses yet.</p>
+                        <p class="text-theme-text-light mb-6">Your delivery address will appear here after your first order.</p>
                     </div>
                 </div>
 
                 <!-- Profile Tab Content -->
                 <div id="profileContent" class="tab-content hidden">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Profile Information</h3>
-                    <div class="bg-gray-50 rounded-xl p-6">
+                    <h3 class="text-2xl font-bold text-theme-text mb-6">Profile Information</h3>
+                    <div class="bg-theme-bg rounded-xl p-6">
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                                <p class="text-gray-900 font-semibold" id="profileName">Loading...</p>
+                                <label class="block text-sm font-medium text-theme-text mb-2">Full Name</label>
+                                <p class="text-theme-text font-semibold" id="profileName">Loading...</p>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                                <p class="text-gray-900 font-semibold" id="profileEmail">Loading...</p>
+                                <label class="block text-sm font-medium text-theme-text mb-2">Email Address</label>
+                                <p class="text-theme-text font-semibold" id="profileEmail">Loading...</p>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Account Created</label>
-                                <p class="text-gray-600" id="profileCreated">Loading...</p>
+                                <label class="block text-sm font-medium text-theme-text mb-2">Account Created</label>
+                                <p class="text-theme-text-light" id="profileCreated">Loading...</p>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Sell Books Section -->
-                    <div class="mt-8 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-6 border border-emerald-200">
-                        <h4 class="text-lg font-semibold text-gray-800 mb-3">Want to Sell Your Books?</h4>
-                        <p class="text-gray-600 mb-4">Join our community of book sellers in Delhi and give your pre-loved books a new home.</p>
+                    <div class="mt-8 bg-theme-gradient-light rounded-xl p-6 border border-theme-light">
+                        <h4 class="text-lg font-semibold text-theme-text mb-3">Want to Sell Your Books?</h4>
+                        <p class="text-theme-text-light mb-4">Join our community of book sellers in Delhi and give your pre-loved books a new home.</p>
                         <a href="mailto:swaply.swap@gmail.com?subject=Want to Sell Books&body=Hi SWAPLY team, I'd like to sell my books!"
-                           class="inline-flex items-center bg-emerald-500 text-white px-6 py-3 rounded-lg hover:bg-emerald-600 transition duration-300 font-semibold">
+                           class="inline-flex items-center bg-theme-primary text-white px-6 py-3 rounded-lg hover:bg-theme-secondary transition duration-300 font-semibold shadow-md hover:shadow-lg">
                             📧 Contact Us to Sell
                         </a>
                     </div>
@@ -145,8 +145,8 @@
 
                 // Remove active class from all tabs
                 tabButtons.forEach(btn => {
-                    btn.classList.remove('active', 'border-emerald-500', 'text-emerald-600');
-                    btn.classList.add('border-transparent', 'text-gray-500');
+                    btn.classList.remove('active', 'border-theme-primary', 'text-theme-primary');
+                    btn.classList.add('border-transparent', 'text-theme-text-light');
                 });
                 tabContents.forEach(content => {
                     content.classList.remove('active');
@@ -154,8 +154,8 @@
                 });
 
                 // Add active class to current tab
-                this.classList.add('active', 'border-emerald-500', 'text-emerald-600');
-                this.classList.remove('border-transparent', 'text-gray-500');
+                this.classList.add('active', 'border-theme-primary', 'text-theme-primary');
+                this.classList.remove('border-transparent', 'text-theme-text-light');
                 document.getElementById(targetTab).classList.add('active');
                 document.getElementById(targetTab).classList.remove('hidden');
 
@@ -230,13 +230,13 @@
 
                 // Display real orders
                 ordersList.innerHTML = orders.map(order => `
-                <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition duration-300">
+                <div class="bg-white rounded-xl shadow-lg border border-theme-light p-6 hover:shadow-xl transition duration-300">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div class="flex-1">
                             <div class="flex items-start justify-between mb-3">
                                 <div>
-                                    <h4 class="text-xl font-bold text-gray-800">${order.book_title}</h4>
-                                    <p class="text-gray-600 text-sm">Order #${order.order_id}</p>
+                                    <h4 class="text-xl font-bold text-theme-text">${order.book_title}</h4>
+                                    <p class="text-theme-text-light text-sm">Order #${order.order_id}</p>
                                 </div>
                                 <span class="px-3 py-1 rounded-full text-sm font-semibold ${order.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
                         order.status === 'Shipped' ? 'bg-blue-100 text-blue-800' :
@@ -250,19 +250,19 @@
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                                 <div>
-                                    <p class="text-gray-600"><strong>Order Date:</strong> ${formatDate(order.created_at)}</p>
-                                    <p class="text-gray-600"><strong>Quantity:</strong> ${order.quantity}</p>
-                                    <p class="text-gray-600"><strong>Payment:</strong> ${order.payment_method === 'cod' ? 'Cash on Delivery' : 'Online Payment'}</p>
+                                    <p class="text-theme-text-light"><strong>Order Date:</strong> ${formatDate(order.created_at)}</p>
+                                    <p class="text-theme-text-light"><strong>Quantity:</strong> ${order.quantity}</p>
+                                    <p class="text-theme-text-light"><strong>Payment:</strong> ${order.payment_method === 'cod' ? 'Cash on Delivery' : 'Online Payment'}</p>
                                 </div>
                                 <div>
-                                    <p class="text-gray-600"><strong>Total:</strong> ₹${order.total_price}</p>
-                                    <p class="text-gray-600"><strong>Delivery To:</strong> ${order.full_name}</p>
-                                    <p class="text-gray-600"><strong>Phone:</strong> ${order.phone}</p>
+                                    <p class="text-theme-text-light"><strong>Total:</strong> ₹${order.total_price}</p>
+                                    <p class="text-theme-text-light"><strong>Delivery To:</strong> ${order.full_name}</p>
+                                    <p class="text-theme-text-light"><strong>Phone:</strong> ${order.phone}</p>
                                 </div>
                             </div>
                             
-                            <div class="mt-4 pt-4 border-t border-gray-200">
-                                <p class="text-gray-700 text-sm">
+                            <div class="mt-4 pt-4 border-t border-theme-light">
+                                <p class="text-theme-text text-sm">
                                     <strong>Delivery Address:</strong><br>
                                     ${order.address_line1}${order.address_line2 ? ', ' + order.address_line2 : ''}<br>
                                     ${order.city}, ${order.state} ${order.zip_code}
@@ -311,13 +311,13 @@
 
                 // Display saved address
                 addressesList.innerHTML = `
-                <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+                <div class="bg-white rounded-xl shadow-lg border border-theme-light p-6">
                     <div class="flex items-start justify-between mb-4">
-                        <h4 class="text-lg font-semibold text-gray-800">Primary Address</h4>
-                        <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full">Default</span>
+                        <h4 class="text-lg font-semibold text-theme-text">Primary Address</h4>
+                        <span class="bg-theme-bg text-theme-primary text-xs px-2 py-1 rounded-full">Default</span>
                     </div>
                     
-                    <div class="space-y-2 text-gray-700">
+                    <div class="space-y-2 text-theme-text">
                         <p><strong>Name:</strong> ${address.name}</p>
                         <p><strong>Phone:</strong> ${address.phone}</p>
                         <p><strong>Address:</strong> ${address.address_line1}</p>
@@ -327,7 +327,7 @@
                         <p><strong>PIN Code:</strong> ${address.zip_code}</p>
                     </div>
                     
-                    <div class="mt-4 pt-4 border-t border-gray-200 text-xs text-gray-500">
+                    <div class="mt-4 pt-4 border-t border-theme-light text-xs text-theme-text-light">
                         <p>Last updated: ${formatDate(address.updated_at)}</p>
                     </div>
                 </div>
@@ -388,8 +388,8 @@
 
 <style>
     .spinner {
-        border: 3px solid #f3f3f3;
-        border-top: 3px solid #10b981;
+        border: 3px solid var(--theme-bg);
+        border-top: 3px solid var(--theme-primary);
         border-radius: 50%;
         width: 40px;
         height: 40px;
@@ -398,8 +398,8 @@
     }
 
     .tab-button.active {
-        border-bottom-color: #10b981;
-        color: #059669;
+        border-bottom-color: var(--theme-primary);
+        color: var(--theme-primary);
     }
 
     .tab-content {

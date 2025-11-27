@@ -1,3 +1,9 @@
+/* Ensure CSS variables are available */
+:root {
+  --theme-section-gradient: linear-gradient(135deg, var(--theme-bg-light), var(--theme-bg));
+  --theme-section-alt-gradient: linear-gradient(135deg, var(--theme-bg), var(--theme-bg-light));
+}
+
 /* Custom animations */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
@@ -8,68 +14,34 @@
     animation: fadeIn 0.6s ease-out;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-}
+/* ... rest of your existing utility.css code remains the same ... */
 
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
+/* Theme utility classes */
+.bg-theme-gradient { background: var(--theme-gradient); }
+.bg-theme-gradient-light { background: var(--theme-gradient-light); }
+.bg-theme-primary { background-color: var(--theme-primary); }
+.bg-theme-secondary { background-color: var(--theme-secondary); }
+.bg-theme-dark { background-color: var(--theme-dark); }
+.bg-theme-light { background-color: var(--theme-light); }
+.bg-theme-bg { background-color: var(--theme-bg); }
+.bg-theme-bg-light { background-color: var(--theme-bg-light); }
+/* NEW: Section gradient classes - make sure these are at the bottom */
+.bg-theme-section-gradient { background: var(--theme-section-gradient) !important; }
+.bg-theme-section-alt-gradient { background: var(--theme-section-alt-gradient) !important; }
 
-::-webkit-scrollbar-thumb {
-    background: #10b981;
-    border-radius: 4px;
-}
+.text-theme-primary { color: var(--theme-primary); }
+.text-theme-secondary { color: var(--theme-secondary); }
+.text-theme-dark { color: var(--theme-dark); }
+.text-theme-light { color: var(--theme-light); }
+.text-theme-text { color: var(--theme-text); }
+.text-theme-text-light { color: var(--theme-text-light); }
+.text-theme-footer-text { color: var(--theme-footer-text); }
 
-::-webkit-scrollbar-thumb:hover {
-    background: #059669;
-}
+.border-theme-primary { border-color: var(--theme-primary); }
+.border-theme-secondary { border-color: var(--theme-secondary); }
+.border-theme-light { border-color: var(--theme-light); }
+.border-theme-dark { border-color: var(--theme-dark); }
 
-/* Gradient text */
-.gradient-text {
-    background: linear-gradient(135deg, #10b981, #0d9488);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-/* Hover effects */
-.hover-lift {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
-/* Loading spinner */
-.spinner {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #10b981;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 2s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Line clamp utilities */
-.line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
+.hover\:bg-theme-primary:hover { background-color: var(--theme-primary); }
+.hover\:bg-theme-secondary:hover { background-color: var(--theme-secondary); }
+.hover\:text-theme-primary:hover { color: var(--theme-primary); }

@@ -3,29 +3,29 @@
 {% block title %}Checkout - SWAPLY{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gray-50 py-8">
+<div class="min-h-screen bg-theme-bg-light py-8">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Checkout</h1>
-            <p class="text-gray-600 mt-2">Complete your purchase securely</p>
+            <h1 class="text-3xl font-bold text-theme-text">Checkout</h1>
+            <p class="text-theme-text-light mt-2">Complete your purchase securely</p>
         </div>
 
         <!-- Progress Steps -->
         <div class="mb-8">
             <div class="flex items-center justify-center">
                 <div class="flex items-center">
-                    <div class="w-8 h-8 bg-emerald-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                    <div class="w-8 h-8 bg-theme-primary text-white rounded-full flex items-center justify-center text-sm font-semibold">
                         1
                     </div>
-                    <div class="ml-2 text-sm font-medium text-emerald-600">Cart</div>
+                    <div class="ml-2 text-sm font-medium text-theme-primary">Cart</div>
                 </div>
-                <div class="w-16 h-1 bg-emerald-600 mx-2"></div>
+                <div class="w-16 h-1 bg-theme-primary mx-2"></div>
                 <div class="flex items-center">
-                    <div class="w-8 h-8 bg-emerald-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                    <div class="w-8 h-8 bg-theme-primary text-white rounded-full flex items-center justify-center text-sm font-semibold">
                         2
                     </div>
-                    <div class="ml-2 text-sm font-medium text-emerald-600">Details</div>
+                    <div class="ml-2 text-sm font-medium text-theme-primary">Details</div>
                 </div>
                 <div class="w-16 h-1 bg-gray-300 mx-2"></div>
                 <div class="flex items-center">
@@ -40,52 +40,52 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- Order Summary Card -->
             <div class="space-y-6">
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Order Summary</h2>
+                <div class="bg-white rounded-xl shadow-sm border border-theme-light p-6">
+                    <h2 class="text-xl font-semibold text-theme-text mb-4">Order Summary</h2>
                     
                     <div id="orderSummary" class="space-y-4">
                         <div class="text-center py-8">
-                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-                            <p class="text-gray-500">Loading order details...</p>
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-theme-primary mx-auto mb-4"></div>
+                            <p class="text-theme-text-light">Loading order details...</p>
                         </div>
                     </div>
                     
                     <!-- Order Total -->
-                    <div id="orderTotal" class="hidden border-t border-gray-200 pt-4 mt-6">
+                    <div id="orderTotal" class="hidden border-t border-theme-light pt-4 mt-6">
                         <div class="space-y-3">
                             <div class="flex justify-between text-sm">
-                                <span class="text-gray-600">Subtotal</span>
-                                <span id="subtotal" class="font-medium">₹0.00</span>
+                                <span class="text-theme-text-light">Subtotal</span>
+                                <span id="subtotal" class="font-medium text-theme-text">₹0.00</span>
                             </div>
                             <div class="flex justify-between text-sm">
-                                <span class="text-gray-600">Shipping</span>
-                                <span class="font-medium text-emerald-600">Free</span>
+                                <span class="text-theme-text-light">Shipping</span>
+                                <span class="font-medium text-theme-primary">Free</span>
                             </div>
-                            <div class="flex justify-between text-base font-semibold text-gray-900 border-t border-gray-200 pt-3">
+                            <div class="flex justify-between text-base font-semibold text-theme-text border-t border-theme-light pt-3">
                                 <span>Total</span>
-                                <span id="total" class="text-lg">₹0.00</span>
+                                <span id="total" class="text-lg text-theme-primary">₹0.00</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Security Badges -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="bg-white rounded-xl shadow-sm border border-theme-light p-6">
                     <div class="flex items-center justify-center space-x-8 text-gray-400">
                         <div class="text-center">
-                            <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <div class="w-10 h-10 bg-theme-bg rounded-full flex items-center justify-center mx-auto mb-2">
                                 <span class="text-lg">🔒</span>
                             </div>
                             <p class="text-xs">Secure Payment</p>
                         </div>
                         <div class="text-center">
-                            <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <div class="w-10 h-10 bg-theme-bg rounded-full flex items-center justify-center mx-auto mb-2">
                                 <span class="text-lg">🚚</span>
                             </div>
                             <p class="text-xs">Free Delivery</p>
                         </div>
                         <div class="text-center">
-                            <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <div class="w-10 h-10 bg-theme-bg rounded-full flex items-center justify-center mx-auto mb-2">
                                 <span class="text-lg">↩️</span>
                             </div>
                             <p class="text-xs">Easy Returns</p>
@@ -95,28 +95,28 @@
             </div>
 
             <!-- Checkout Form Card -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 class="text-xl font-semibold text-gray-900 mb-6">Shipping & Payment</h2>
+            <div class="bg-white rounded-xl shadow-sm border border-theme-light p-6">
+                <h2 class="text-xl font-semibold text-theme-text mb-6">Shipping & Payment</h2>
                 
                 <form id="checkoutForm" class="space-y-6">
                     <!-- Contact Information -->
                     <div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Contact Information</h3>
+                        <h3 class="text-lg font-medium text-theme-text mb-4">Contact Information</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label for="full_name" class="block text-sm font-medium text-gray-700 mb-1">
+                                <label for="full_name" class="block text-sm font-medium text-theme-text mb-1">
                                     Full Name *
                                 </label>
                                 <input type="text" id="full_name" name="full_name" required
-                                       class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200"
+                                       class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-theme-primary focus:border-theme-primary transition duration-200"
                                        placeholder="Enter your full name">
                             </div>
                             <div>
-                                <label for="phone_number" class="block text-sm font-medium text-gray-700 mb-1">
+                                <label for="phone_number" class="block text-sm font-medium text-theme-text mb-1">
                                     Phone Number *
                                 </label>
                                 <input type="tel" id="phone_number" name="phone_number" required
-                                       class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200"
+                                       class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-theme-primary focus:border-theme-primary transition duration-200"
                                        placeholder="+91 98765 43210">
                             </div>
                         </div>
@@ -124,47 +124,47 @@
 
                     <!-- Shipping Address -->
                     <div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Shipping Address</h3>
+                        <h3 class="text-lg font-medium text-theme-text mb-4">Shipping Address</h3>
                         <div class="space-y-4">
                             <div>
-                                <label for="address_line1" class="block text-sm font-medium text-gray-700 mb-1">
+                                <label for="address_line1" class="block text-sm font-medium text-theme-text mb-1">
                                     Street Address *
                                 </label>
                                 <input type="text" id="address_line1" name="address_line1" required
-                                       class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200"
+                                       class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-theme-primary focus:border-theme-primary transition duration-200"
                                        placeholder="123 Main Street">
                             </div>
                             <div>
-                                <label for="address_line2" class="block text-sm font-medium text-gray-700 mb-1">
+                                <label for="address_line2" class="block text-sm font-medium text-theme-text mb-1">
                                     Area, Landmark, etc. (Optional)
                                 </label>
                                 <input type="text" id="address_line2" name="address_line2"
-                                       class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200"
+                                       class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-theme-primary focus:border-theme-primary transition duration-200"
                                        placeholder="Near Metro Station">
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
-                                    <label for="address_city" class="block text-sm font-medium text-gray-700 mb-1">
+                                    <label for="address_city" class="block text-sm font-medium text-theme-text mb-1">
                                         City *
                                     </label>
                                     <input type="text" id="address_city" name="address_city" required
-                                           class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200"
+                                           class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-theme-primary focus:border-theme-primary transition duration-200"
                                            placeholder="Delhi">
                                 </div>
                                 <div>
-                                    <label for="address_state" class="block text-sm font-medium text-gray-700 mb-1">
+                                    <label for="address_state" class="block text-sm font-medium text-theme-text mb-1">
                                         State *
                                     </label>
                                     <input type="text" id="address_state" name="address_state" required
-                                           class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200"
+                                           class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-theme-primary focus:border-theme-primary transition duration-200"
                                            placeholder="Delhi">
                                 </div>
                                 <div>
-                                    <label for="address_zip" class="block text-sm font-medium text-gray-700 mb-1">
+                                    <label for="address_zip" class="block text-sm font-medium text-theme-text mb-1">
                                         PIN Code *
                                     </label>
                                     <input type="text" id="address_zip" name="address_zip" required
-                                           class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200"
+                                           class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-theme-primary focus:border-theme-primary transition duration-200"
                                            placeholder="110001">
                                 </div>
                             </div>
@@ -173,21 +173,21 @@
 
                     <!-- Payment Method -->
                     <div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Payment Method</h3>
+                        <h3 class="text-lg font-medium text-theme-text mb-4">Payment Method</h3>
                         <div class="space-y-3">
-                            <div class="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-emerald-500 transition duration-200 cursor-pointer">
+                            <div class="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-theme-primary transition duration-200 cursor-pointer">
                                 <input type="radio" id="cash_on_delivery" name="payment_method" value="cash_on_delivery" 
-                                       class="h-5 w-5 text-emerald-600 focus:ring-emerald-500 border-gray-300" checked>
+                                       class="h-5 w-5 text-theme-primary focus:ring-theme-primary border-gray-300" checked>
                                 <label for="cash_on_delivery" class="ml-3 flex items-center">
-                                    <span class="block text-sm font-medium text-gray-700">Cash on Delivery</span>
-                                    <span class="ml-2 text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">Recommended</span>
+                                    <span class="block text-sm font-medium text-theme-text">Cash on Delivery</span>
+                                    <span class="ml-2 text-xs text-theme-primary bg-theme-bg px-2 py-1 rounded-full">Recommended</span>
                                 </label>
                             </div>
                             
-                            <div class="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-emerald-500 transition duration-200 cursor-pointer">
+                            <div class="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-theme-primary transition duration-200 cursor-pointer">
                                 <input type="radio" id="online" name="payment_method" value="online" 
-                                       class="h-5 w-5 text-emerald-600 focus:ring-emerald-500 border-gray-300">
-                                <label for="online" class="ml-3 block text-sm font-medium text-gray-700">
+                                       class="h-5 w-5 text-theme-primary focus:ring-theme-primary border-gray-300">
+                                <label for="online" class="ml-3 block text-sm font-medium text-theme-text">
                                     Online Payment
                                 </label>
                             </div>
@@ -210,14 +210,14 @@
                     <!-- Submit Button -->
                     <div class="pt-4">
                         <button type="submit" 
-                                class="w-full bg-emerald-600 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-500 focus:ring-opacity-50 transition duration-200 transform hover:scale-[1.02] flex items-center justify-center">
+                                class="w-full bg-theme-primary text-white py-4 px-6 rounded-lg font-semibold text-lg hover:bg-theme-secondary focus:outline-none focus:ring-4 focus:ring-theme-primary focus:ring-opacity-50 transition duration-200 transform hover:scale-[1.02] flex items-center justify-center shadow-md hover:shadow-lg">
                             <span id="submitText">Place Order</span>
                             <div id="submitSpinner" class="hidden ml-2">
                                 <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                             </div>
                         </button>
-                        <p class="text-xs text-gray-500 text-center mt-3">
-                            By placing your order, you agree to our <a href="#" class="text-emerald-600 hover:text-emerald-700">Terms of Service</a> and <a href="#" class="text-emerald-600 hover:text-emerald-700">Privacy Policy</a>
+                        <p class="text-xs text-theme-text-light text-center mt-3">
+                            By placing your order, you agree to our <a href="#" class="text-theme-primary hover:text-theme-secondary">Terms of Service</a> and <a href="#" class="text-theme-primary hover:text-theme-secondary">Privacy Policy</a>
                         </p>
                     </div>
                 </form>
@@ -230,13 +230,13 @@
 <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
     <div class="bg-white rounded-2xl p-8 max-w-md mx-4 transform transition-all duration-300 scale-95">
         <div class="text-center">
-            <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div class="w-16 h-16 bg-theme-bg rounded-full flex items-center justify-center mx-auto mb-4">
                 <span class="text-2xl">🎉</span>
             </div>
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">Order Placed!</h3>
-            <p class="text-gray-600 mb-6">Thank you for your purchase. We'll contact you soon for delivery.</p>
+            <h3 class="text-2xl font-bold text-theme-text mb-2">Order Placed!</h3>
+            <p class="text-theme-text-light mb-6">Thank you for your purchase. We'll contact you soon for delivery.</p>
             <button onclick="redirectToManage()" 
-                    class="w-full bg-emerald-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-emerald-700 transition duration-200">
+                    class="w-full bg-theme-primary text-white py-3 px-6 rounded-lg font-semibold hover:bg-theme-secondary transition duration-200 shadow-md hover:shadow-lg">
                 View My Orders
             </button>
         </div>
@@ -385,22 +385,22 @@ function displaySingleBook(book) {
     }
 
     orderSummary.innerHTML = `
-        <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+        <div class="flex items-center space-x-4 p-4 bg-theme-bg rounded-lg">
             <!-- Book Image -->
             <div class="flex-shrink-0">
                 ${book.image_url ? 
-                    `<img src="${book.image_url}" alt="${book.title || 'Unknown Title'}" class="w-16 h-20 object-cover rounded-lg border border-gray-200">` :
-                    `<div class="w-16 h-20 bg-gradient-to-br from-emerald-100 to-blue-100 rounded-lg flex items-center justify-center text-emerald-600 font-bold text-xs">
+                    `<img src="${book.image_url}" alt="${book.title || 'Unknown Title'}" class="w-16 h-20 object-cover rounded-lg border border-theme-light">` :
+                    `<div class="w-16 h-20 bg-theme-gradient-light rounded-lg flex items-center justify-center text-theme-primary font-bold text-xs">
                         BOOK
                     </div>`
                 }
             </div>
             <div class="flex-1 min-w-0">
-                <h4 class="font-semibold text-gray-800 truncate">${book.title || 'Unknown Title'}</h4>
-                <p class="text-gray-600 text-sm truncate">by ${book.author || 'Unknown Author'}</p>
+                <h4 class="font-semibold text-theme-text truncate">${book.title || 'Unknown Title'}</h4>
+                <p class="text-theme-text-light text-sm truncate">by ${book.author || 'Unknown Author'}</p>
                 <div class="flex items-center justify-between mt-2">
-                    <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">${book.condition || 'Unknown'}</span>
-                    <span class="text-lg font-bold text-emerald-600">₹${price.toFixed(2)}</span>
+                    <span class="text-xs text-theme-text-light bg-theme-bg-light px-2 py-1 rounded">${book.condition || 'Unknown'}</span>
+                    <span class="text-lg font-bold text-theme-primary">₹${price.toFixed(2)}</span>
                 </div>
             </div>
         </div>
@@ -427,21 +427,21 @@ function displayCartCheckout(cartItems, total) {
     cartItems.forEach((item, index) => {
         const itemTotal = item.price * item.quantity;
         itemsHtml += `
-            <div class="flex items-start space-x-3 mb-4 p-3 bg-gray-50 rounded-lg">
+            <div class="flex items-start space-x-3 mb-4 p-3 bg-theme-bg rounded-lg">
                 <!-- Book Image -->
                 <div class="flex-shrink-0">
                     ${item.image_url ? 
-                        `<img src="${item.image_url}" alt="${item.title}" class="w-12 h-16 object-cover rounded-lg border border-gray-200">` :
-                        `<div class="w-12 h-16 bg-gradient-to-br from-emerald-100 to-blue-100 rounded-lg flex items-center justify-center text-emerald-600 font-bold text-xs">
+                        `<img src="${item.image_url}" alt="${item.title}" class="w-12 h-16 object-cover rounded-lg border border-theme-light">` :
+                        `<div class="w-12 h-16 bg-theme-gradient-light rounded-lg flex items-center justify-center text-theme-primary font-bold text-xs">
                             BOOK
                         </div>`
                     }
                 </div>
                 <div class="flex-1">
-                    <h4 class="font-bold text-gray-800 leading-tight">${item.title}</h4>
-                    <p class="text-gray-600 text-sm">by ${item.author}</p>
-                    <p class="text-gray-500 text-xs mt-1">Condition: ${item.condition}</p>
-                    <p class="text-emerald-600 font-bold mt-1">₹${item.price.toFixed(2)} × ${item.quantity} = ₹${itemTotal.toFixed(2)}</p>
+                    <h4 class="font-bold text-theme-text leading-tight">${item.title}</h4>
+                    <p class="text-theme-text-light text-sm">by ${item.author}</p>
+                    <p class="text-theme-text-light text-xs mt-1">Condition: ${item.condition}</p>
+                    <p class="text-theme-primary font-bold mt-1">₹${item.price.toFixed(2)} × ${item.quantity} = ₹${itemTotal.toFixed(2)}</p>
                 </div>
             </div>
         `;
@@ -449,7 +449,7 @@ function displayCartCheckout(cartItems, total) {
     
     orderSummary.innerHTML = `
         <div class="text-left space-y-3">
-            <h3 class="font-semibold text-gray-800 border-b pb-2">Order Summary (${cartItems.length} items)</h3>
+            <h3 class="font-semibold text-theme-text border-b border-theme-light pb-2">Order Summary (${cartItems.length} items)</h3>
             ${itemsHtml}
         </div>
     `;
@@ -470,11 +470,11 @@ function showBookNotFound(message) {
     const orderSummary = document.getElementById('orderSummary');
     orderSummary.innerHTML = `
         <div class="text-center py-8">
-            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div class="w-16 h-16 bg-theme-bg rounded-full flex items-center justify-center mx-auto mb-4">
                 <span class="text-2xl">📚</span>
             </div>
-            <p class="text-gray-500 mb-4">${message}</p>
-            <a href="/books" class="inline-flex items-center bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition duration-200">
+            <p class="text-theme-text-light mb-4">${message}</p>
+            <a href="/books" class="inline-flex items-center bg-theme-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-theme-secondary transition duration-200 shadow-md hover:shadow-lg">
                 Browse Books
                 <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
@@ -698,7 +698,7 @@ function showSuccessModal() {
 
 function showToast(message, type = 'info') {
     const toast = document.getElementById('toast');
-    const bgColor = type === 'success' ? 'bg-green-500' : 
+    const bgColor = type === 'success' ? 'bg-theme-primary' : 
                     type === 'error' ? 'bg-red-500' : 
                     'bg-blue-500';
     
