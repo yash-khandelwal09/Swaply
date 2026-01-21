@@ -40,3 +40,6 @@ logs/
 # Database
 *.db
 *.sqlite3
+env/
+credentials.json
+.env
